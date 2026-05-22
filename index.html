@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBM Real-Time Monitoring - IT Gorontalo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (XLSX) untuk Ekspor Excel yang rapi -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            darkbg: '#0f172a', // Slate 900
+                            cardbg: '#1e293b', // Slate 800
+                            border: '#334155', // Slate 700
+                            textPrimary: '#f8fafc',
+                            textSecondary: '#94a3b8',
+                            // Warna Produk Pertamina
+                            biosolar: '#10b981', // Emerald 500
+                            pertalite: '#84cc16', // Lime 500
+                            pertamax: '#3b82f6', // Blue 500
+                            dexlite: '#f97316', // Orange 500
+                            pertadex: '#ef4444'  // Red 500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-brand-cardbg border-b border-brand-border px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-blue-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-blue-500/10">
+                <i data-lucide="droplet" class="w-6 h-6 text-white animate-pulse"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    IT GORONTALO <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">BBM MONITORING</span>
+                </h1>
+                <p class="text-xs text-brand-textSecondary">Sistem Analisis Integratif & Pengambilan Keputusan Distribusi Real-Time</p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <!-- Info Status -->
+            <div class="bg-slate-900/60 border border-brand-border rounded-lg px-3 py-1.5 flex items-center gap-2 text-xs text-brand-textSecondary">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>Sistem Terkoneksi</span>
+            </div>
+            <!-- Waktu Real-Time -->
+            <div class="bg-slate-900/60 border border-brand-border rounded-lg px-3 py-1.5 text-xs text-brand-textSecondary font-mono" id="realtime-clock">
+                Kamis, 21 Mei 2026 | 00:00:00
+            </div>
+            <!-- Nav Tombol Cepat -->
+            <button onclick="scrollToSection('analysis-section')" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 transition shadow-lg shadow-indigo-500/20">
+                <i data-lucide="trending-up" class="w-4 h-4"></i> Lihat Analisis Tren
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex flex-col lg:flex-row">
+        <!-- SIDEBAR PANEL - KONTROL DATA -->
+        <aside class="w-full lg:w-80 bg-brand-cardbg lg:border-r border-brand-border p-6 flex flex-col gap-6">
+            <!-- INPUT DATA BARU -->
+            <div>
+                <h2 class="text-sm font-semibold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-500" id="form-icon-header"></i> 
+                    <span id="form-title-text">Input Penyaluran</span>
+                </h2>
+                <form id="form-penyaluran" class="space-y-3.5 bg-slate-900/40 p-4 rounded-xl border border-brand-border">
+                    <input type="hidden" id="edit-id" value="">
+                    <div>
+                        <label class="block text-xs text-brand-textSecondary mb-1 font-medium">Tanggal Penyaluran</label>
+                        <input type="date" id="input-date" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-brand-textSecondary mb-1 font-medium">Shift Kerja</label>
+                        <select id="input-shift" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                            <option value="Shift I">Shift I (Pagi - Sore)</option>
+                            <option value="Shift II">Shift II (Sore - Pagi)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-emerald-400 mb-1 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-biosolar"></span> BIOSOLARB40 (KL)
+                        </label>
+                        <input type="number" step="0.01" min="0" id="val-biosolar" placeholder="0.00" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-lime-400 mb-1 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-pertalite"></span> PERTALITE (KL)
+                        </label>
+                        <input type="number" step="0.01" min="0" id="val-pertalite" placeholder="0.00" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-lime-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-blue-400 mb-1 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-pertamax"></span> PERTAMAX (KL)
+                        </label>
+                        <input type="number" step="0.01" min="0" id="val-pertamax" placeholder="0.00" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-orange-400 mb-1 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-dexlite"></span> DEXLITE (KL)
+                        </label>
+                        <input type="number" step="0.01" min="0" id="val-dexlite" placeholder="0.00" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-red-400 mb-1 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-pertadex"></span> PERTADEX (KL)
+                        </label>
+                        <input type="number" step="0.01" min="0" id="val-pertadex" placeholder="0.00" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-red-500">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="hidden w-1/3 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 rounded-lg text-xs transition">
+                            Batal
+                        </button>
+                        <button type="submit" id="submit-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="submit-btn-text">Simpan & Perbarui</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- UTILITY KONTROL DATA -->
+            <div class="border-t border-brand-border pt-4 space-y-3">
+                <h3 class="text-xs font-semibold text-brand-textSecondary uppercase tracking-wider">Aksi Cepat Data</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportToExcel()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Excel (Rapi)
+                    </button>
+                    <button onclick="triggerResetMock()" class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/50 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Mock
+                    </button>
+                </div>
+                <button onclick="openImportModal()" class="w-full bg-slate-800 hover:bg-slate-700 border border-brand-border text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Import JSON / Bulk Data
+                </button>
+            </div>
+
+            <!-- INFO / DISCLAIMER GORONTALO -->
+            <div class="mt-auto bg-slate-900/50 border border-brand-border/60 p-4 rounded-xl text-xs space-y-1.5 text-brand-textSecondary">
+                <div class="flex items-center gap-2 text-white font-medium">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-rose-500"></i>
+                    <span>Integrated Terminal Gorontalo</span>
+                </div>
+                <p class="leading-relaxed">Sistem terintegrasi harian dan shift kerja memantau penyaluran dari Tangki Timbun IT Gorontalo.</p>
+            </div>
+        </aside>
+
+        <!-- MAIN MONITORING AREA -->
+        <main class="flex-1 p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+            
+            <!-- POPUP NOTIFICATION BANNER -->
+            <div id="toast-notif" class="hidden fixed bottom-6 right-6 z-50 bg-slate-800 border-l-4 border-emerald-500 text-white px-5 py-3.5 rounded-r-xl shadow-2xl flex items-center gap-3 transition-all transform translate-y-10 opacity-0">
+                <i data-lucide="bell" id="toast-icon" class="w-5 h-5 text-emerald-400"></i>
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase">Sistem Notifikasi</h4>
+                    <p class="text-xs text-brand-textSecondary" id="toast-message">Data berhasil diproses!</p>
+                </div>
+            </div>
+
+            <!-- CARDS TOTAL AKUMULASI (YEAR TO DATE - 2026) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm relative overflow-hidden">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-medium text-brand-textSecondary">Volume Terpilih (Saring)</span>
+                        <h3 class="text-2xl font-black text-white animate-pulse" id="stat-total-ytd">0.00 KL</h3>
+                        <p class="text-[10px] text-emerald-400 font-medium flex items-center gap-1" id="stat-total-ytd-subtitle">
+                            <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Terkumulatif dalam saringan
+                        </p>
+                    </div>
+                    <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                        <i data-lucide="database" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-medium text-brand-textSecondary">Hari Paling Padat (Crowded Day)</span>
+                        <h3 class="text-2xl font-black text-amber-400" id="stat-crowded-day">SABTU</h3>
+                        <p class="text-[10px] text-brand-textSecondary" id="stat-crowded-day-detail">Penyaluran rerata tertinggi harian</p>
+                    </div>
+                    <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
+                        <i data-lucide="calendar-range" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-medium text-brand-textSecondary">Bulan Puncak Penyaluran</span>
+                        <h3 class="text-2xl font-black text-emerald-400" id="stat-peak-month">DESEMBER</h3>
+                        <p class="text-[10px] text-brand-textSecondary" id="stat-peak-month-vol">Volume: 0.00 KL</p>
+                    </div>
+                    <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-medium text-brand-textSecondary">Kontributor BBM Utama</span>
+                        <h3 class="text-2xl font-black text-lime-400" id="stat-top-product">PERTALITE</h3>
+                        <p class="text-[10px] text-brand-textSecondary" id="stat-top-product-pct">Share: 0.0% dari total</p>
+                    </div>
+                    <div class="p-3 bg-lime-500/10 rounded-xl text-lime-400">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRAFIK UTAMA: TREN DISTRIBUSI REAL-TIME -->
+            <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="line-chart" class="w-5 h-5 text-blue-500"></i> Visualisasi Tren Penyaluran Real-Time
+                        </h3>
+                        <p class="text-xs text-brand-textSecondary">Sistem visualisasi terintegrasi (Semua Tanggal & Agregat harian)</p>
+                    </div>
+
+                    <!-- KONTROL FILTER YANG TERINTEGRASI -->
+                    <div class="flex flex-wrap items-center gap-2 bg-slate-900/60 p-2 rounded-xl border border-brand-border">
+                        <!-- Filter Produk -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold text-brand-textSecondary uppercase mb-1">Filter Produk BBM</label>
+                            <select onchange="switchChartProduct(this.value)" id="filter-product-select" class="bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                                <option value="all">⭐ Semua Produk BBM</option>
+                                <option value="biosolar">🟢 BIOSOLARB40</option>
+                                <option value="pertalite">🟡 PERTALITE</option>
+                                <option value="pertamax">🔵 PERTAMAX</option>
+                                <option value="dexlite">🟠 DEXLITE</option>
+                                <option value="pertadex">🔴 PERTADEX</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Filter Shift -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold text-brand-textSecondary uppercase mb-1">Filter Shift Kerja</label>
+                            <div class="flex bg-brand-cardbg p-1 rounded-lg border border-brand-border text-[11px]">
+                                <button onclick="switchChartShift('all')" id="btn-shift-all" class="px-2 py-1 rounded-md font-semibold transition bg-blue-600 text-white">Semua</button>
+                                <button onclick="switchChartShift('Shift I')" id="btn-shift-s1" class="px-2 py-1 rounded-md font-semibold transition text-brand-textSecondary hover:text-white">Shift I</button>
+                                <button onclick="switchChartShift('Shift II')" id="btn-shift-s2" class="px-2 py-1 rounded-md font-semibold transition text-brand-textSecondary hover:text-white">Shift II</button>
+                            </div>
+                        </div>
+
+                        <!-- Filter Rentang Waktu -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold text-brand-textSecondary uppercase mb-1">Rentang Skala</label>
+                            <div class="flex bg-brand-cardbg p-1 rounded-lg border border-brand-border text-[11px]">
+                                <button onclick="switchChartScope('daily')" id="btn-scope-daily" class="px-2 py-1 rounded-md font-medium transition bg-blue-600 text-white">Harian</button>
+                                <button onclick="switchChartScope('monthly')" id="btn-scope-monthly" class="px-2 py-1 rounded-md font-medium transition text-brand-textSecondary hover:text-white">Bulanan</button>
+                                <button onclick="switchChartScope('quarterly')" id="btn-scope-quarterly" class="px-2 py-1 rounded-md font-medium transition text-brand-textSecondary hover:text-white">Triwulan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas Container with scroll helper if labels are too long -->
+                <div class="relative w-full overflow-x-auto">
+                    <div class="min-w-[800px] h-80 md:h-96">
+                        <canvas id="mainDistributionChart"></canvas>
+                    </div>
+                </div>
+                <div class="text-[10px] text-brand-textSecondary italic text-right">
+                    *Gunakan saringan di atas untuk mengisolasi tren produk secara instan. Geser grafik ke samping pada mobile.
+                </div>
+            </div>
+
+            <!-- DUA KOLOM ANALISIS: SHARE PRODUK DAN ANALISIS HARI CROWDED -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Share Produk (Pie/Donut) -->
+                <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                            <i data-lucide="pie-chart" class="w-5 h-5 text-emerald-500" id="share-chart-icon"></i> 
+                            <span id="share-chart-title">Komposisi Produk BBM</span>
+                        </h3>
+                        <p class="text-xs text-brand-textSecondary mb-4" id="share-chart-desc">Proporsi kontribusi volume penyaluran</p>
+                    </div>
+                    <div class="relative h-64 w-full flex items-center justify-center">
+                        <canvas id="productShareChart"></canvas>
+                    </div>
+                    <div class="mt-4 space-y-2 text-xs" id="share-product-legend">
+                        <!-- Legend Diisi Dinamis Via JS -->
+                    </div>
+                </div>
+
+                <!-- Tren Hari Crowded (Bar Chart) -->
+                <div class="lg:col-span-8 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-amber-500"></i> Tren Rata-rata Penyaluran Mingguan
+                        </h3>
+                        <p class="text-xs text-brand-textSecondary mb-4">Mengidentifikasi pola kepadatan aktivitas mingguan SPBU di IT Gorontalo (Rerata Volume)</p>
+                    </div>
+                    <div class="relative h-64 w-full">
+                        <canvas id="weeklyPatternChart"></canvas>
+                    </div>
+                    <div class="mt-4 bg-slate-900/50 p-3 rounded-xl border border-brand-border text-xs text-brand-textSecondary flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                        <span>Pola mingguan di atas tersaring otomatis berdasarkan produk BBM yang dipilih untuk akurasi penjadwalan.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABEL REKOMENDASI PREDICTIVE & STOCK MAXIMIZATION (CRITICAL FOR USER) -->
+            <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4" id="analysis-section">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-orange-500 animate-bounce"></i> Rekomendasi Manajemen Stok & Maksimalisasi IT Gorontalo
+                    </h3>
+                    <p class="text-xs text-brand-textSecondary">Sistem mendeteksi tren crowding secara otomatis dan menyarankan persentase penyesuaian stok tangki SPBU sebelum disalurkan.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="recommendation-cards-container">
+                    <!-- Kartu rekomendasi per produk akan dirender di sini via JS -->
+                </div>
+
+                <!-- Warning Box Terintegrasi -->
+                <div class="p-4 bg-amber-500/10 border-l-4 border-amber-500 rounded-r-xl space-y-2">
+                    <h4 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> DETEKTIF ANOMALI & ANALISIS MASALAH SEBELUM TERJADI
+                    </h4>
+                    <p class="text-xs text-brand-textSecondary leading-relaxed" id="dynamic-warning-text">
+                        Memproses data terintegrasi...
+                    </p>
+                </div>
+            </div>
+
+            <!-- DETAIL TRANSAKSI & TABEL DATA INTEGRAL -->
+            <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="table" class="w-5 h-5 text-indigo-400"></i> Log Transaksi Penyaluran BBM Harian & Shift
+                        </h3>
+                        <p class="text-xs text-brand-textSecondary">Daftar lengkap record distribusi per shift dengan aksi ubah/hapus terintegrasi</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" id="search-data" oninput="renderTable()" placeholder="Cari Tanggal..." class="bg-slate-900 border border-brand-border text-xs rounded-lg px-3 py-1.5 text-white placeholder-brand-textSecondary focus:outline-none focus:border-blue-500">
+                        <button onclick="triggerClearAll()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/50 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                            Hapus Semua Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Responsive Table Container -->
+                <div class="overflow-x-auto rounded-xl border border-brand-border bg-slate-900/40">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-brand-border bg-slate-900 text-[11px] font-bold text-brand-textSecondary uppercase tracking-wider">
+                                <th class="py-3 px-4">Hari / Tanggal</th>
+                                <th class="py-3 px-4">Shift</th>
+                                <th class="py-3 px-4 text-right">BIOSOLARB40 (KL)</th>
+                                <th class="py-3 px-4 text-right">PERTALITE (KL)</th>
+                                <th class="py-3 px-4 text-right">PERTAMAX (KL)</th>
+                                <th class="py-3 px-4 text-right">DEXLITE (KL)</th>
+                                <th class="py-3 px-4 text-right">PERTADEX (KL)</th>
+                                <th class="py-3 px-4 text-right bg-slate-800/20">TOTAL (KL)</th>
+                                <th class="py-3 px-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-penyaluran" class="text-xs text-brand-textSecondary divide-y divide-brand-border">
+                            <!-- Data baris diisi via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-cardbg border-t border-brand-border py-4 px-6 flex justify-between items-center text-xs text-brand-textSecondary">
+        <span>© 2026 IT Gorontalo SSGA. All Right Reserved.</span>
+        <span class="flex items-center gap-1"><i data-lucide="code" class="w-3.5 h-3.5 text-blue-500"></i> Created by : Reynaldi</span>
+    </footer>
+
+    <!-- MODAL UNTUK BULK IMPORT DATA JSON -->
+    <div id="import-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-brand-cardbg border border-brand-border rounded-2xl w-full max-w-lg p-6 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="upload" class="w-5 h-5 text-indigo-400"></i> Import Data Massal (Bulk JSON)
+                </h3>
+                <button onclick="closeImportModal()" class="text-brand-textSecondary hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-brand-textSecondary">Tempelkan data berformat array JSON dari aplikasi eksternal atau spreadsheet Anda untuk penggabungan instan.</p>
+            <textarea id="import-json-area" placeholder='[{"tanggal":"2026-05-01","shift":"Shift I","biosolar":25.2,"pertalite":60.5,"pertamax":15.0,"dexlite":6.1,"pertadex":4.5}]' class="w-full h-40 bg-slate-900 border border-brand-border rounded-xl p-3 text-xs font-mono text-emerald-400 focus:outline-none focus:border-blue-500"></textarea>
+            <div class="flex justify-end gap-2 text-xs">
+                <button onclick="closeImportModal()" class="bg-slate-800 border border-brand-border text-white px-4 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="processBulkImport()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg font-medium">Impor Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-950/80 z-[100] flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-brand-cardbg border border-brand-border rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center gap-3 text-amber-500">
+                <div class="bg-amber-500/10 p-2 rounded-xl">
+                    <i data-lucide="help-circle" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Konfirmasi</h3>
+                    <p class="text-[11px] text-brand-textSecondary">Tindakan Pengubahan Sistem</p>
+                </div>
+            </div>
+            <p class="text-xs text-brand-textSecondary leading-relaxed" id="confirm-modal-msg">Apakah Anda yakin dengan keputusan ini?</p>
+            <div class="flex justify-end gap-2 text-xs">
+                <button id="confirm-btn-no" class="bg-slate-800 hover:bg-slate-700 border border-brand-border text-white px-4 py-2 rounded-lg font-medium transition">Batal</button>
+                <button id="confirm-btn-yes" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-lg font-medium transition">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORE BUSINESS LOGIC, GRAPH MANAGEMENT & EXCEL BUILDER -->
+    <script>
+        // MOCK DATA UTK INISIALISASI
+        const MOCK_DATA = [
+            { id: "1", tanggal: "2026-04-01", shift: "Shift I", biosolar: 26.20, pertalite: 55.20, pertamax: 17.60, dexlite: 6.25, pertadex: 4.20 },
+            { id: "2", tanggal: "2026-04-01", shift: "Shift II", biosolar: 26.20, pertalite: 55.30, pertamax: 17.60, dexlite: 6.25, pertadex: 4.20 },
+            { id: "3", tanggal: "2026-04-02", shift: "Shift I", biosolar: 24.45, pertalite: 57.60, pertamax: 15.90, dexlite: 7.10, pertadex: 3.95 },
+            { id: "4", tanggal: "2026-04-02", shift: "Shift II", biosolar: 24.45, pertalite: 57.60, pertamax: 15.90, dexlite: 7.10, pertadex: 3.95 },
+            { id: "5", tanggal: "2026-04-03", shift: "Shift I", biosolar: 27.55, pertalite: 64.00, pertamax: 19.30, dexlite: 7.55, pertadex: 4.55 },
+            { id: "6", tanggal: "2026-04-03", shift: "Shift II", biosolar: 27.55, pertalite: 64.00, pertamax: 19.30, dexlite: 7.55, pertadex: 4.55 },
+            { id: "7", tanggal: "2026-04-04", shift: "Shift I", biosolar: 30.60, pertalite: 71.05, pertamax: 22.50, dexlite: 9.20, pertadex: 5.60 }, // Sabtu Peak
+            { id: "8", tanggal: "2026-04-04", shift: "Shift II", biosolar: 30.60, pertalite: 71.05, pertamax: 22.50, dexlite: 9.20, pertadex: 5.60 },
+            { id: "9", tanggal: "2026-04-05", shift: "Shift I", biosolar: 16.25, pertalite: 47.50, pertamax: 11.05, dexlite: 4.45, pertadex: 2.70 }, // Minggu Quiet
+            { id: "10", tanggal: "2026-04-05", shift: "Shift II", biosolar: 16.25, pertalite: 47.50, pertamax: 11.05, dexlite: 4.45, pertadex: 2.70 },
+            { id: "11", tanggal: "2026-04-06", shift: "Shift I", biosolar: 25.40, pertalite: 54.20, pertamax: 16.00, dexlite: 5.90, pertadex: 4.00 },
+            { id: "12", tanggal: "2026-04-06", shift: "Shift II", biosolar: 25.40, pertalite: 54.20, pertamax: 16.00, dexlite: 5.90, pertadex: 4.00 },
+            { id: "13", tanggal: "2026-04-07", shift: "Shift I", biosolar: 23.80, pertalite: 56.45, pertamax: 14.75, dexlite: 6.20, pertadex: 3.80 },
+            { id: "14", tanggal: "2026-04-07", shift: "Shift II", biosolar: 23.80, pertalite: 56.45, pertamax: 14.75, dexlite: 6.20, pertadex: 3.80 },
+            { id: "15", tanggal: "2026-04-08", shift: "Shift I", biosolar: 24.65, pertalite: 57.05, pertamax: 16.70, dexlite: 6.50, pertadex: 4.10 },
+            { id: "16", tanggal: "2026-04-08", shift: "Shift II", biosolar: 24.65, pertalite: 57.05, pertamax: 16.70, dexlite: 6.50, pertadex: 4.10 }
+        ];
+
+        // GLOBAL APP STATE
+        let bbmData = [];
+        let currentChartScope = 'daily'; // daily, monthly, quarterly
+        let currentChartShift = 'all'; // all, Shift I, Shift II
+        let currentChartProduct = 'all'; // all, biosolar, pertalite, pertamax, dexlite, pertadex
+        
+        let mainChart = null;
+        let productShareChart = null;
+        let weeklyPatternChart = null;
+
+        // PRODUK CONFIG
+        const productsConfig = {
+            biosolar: { label: 'BIOSOLARB40', color: '#10b981', hoverColor: '#059669' },
+            pertalite: { label: 'PERTALITE', color: '#84cc16', hoverColor: '#65a30d' },
+            pertamax: { label: 'PERTAMAX', color: '#3b82f6', hoverColor: '#2563eb' },
+            dexlite: { label: 'DEXLITE', color: '#f97316', hoverColor: '#ea580c' },
+            pertadex: { label: 'PERTADEX', color: '#ef4444', hoverColor: '#dc2626' }
+        };
+
+        // KRONOLOGI HARI INDONESIA
+        const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const bulanIndo = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        // INITIALIZATION WINDOW LOAD
+        window.onload = function () {
+            initApp();
+            
+            // Start clock
+            setInterval(updateClock, 1000);
+            updateClock();
+        }
+
+        function initApp() {
+            // Cek LocalStorage
+            const stored = localStorage.getItem('it_gorontalo_bbm_data');
+            if (stored) {
+                bbmData = JSON.parse(stored);
+            } else {
+                bbmData = [...MOCK_DATA];
+                localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+            }
+
+            // Lucide Icons Render
+            lucide.createIcons();
+
+            // Render All Components
+            renderDashboard();
+
+            // Form Submit Listener
+            document.getElementById('form-penyaluran').addEventListener('submit', handleAddData);
+        }
+
+        // REALTIME CLOCK UTILITY
+        function updateClock() {
+            const now = new Date();
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const dateStr = days[now.getDay()] + ", " + now.getDate() + " " + bulanIndo[now.getMonth()] + " " + now.getFullYear();
+            const timeStr = now.toTimeString().split(' ')[0];
+            const clockEl = document.getElementById('realtime-clock');
+            if (clockEl) {
+                clockEl.innerHTML = `${dateStr} | ${timeStr}`;
+            }
+        }
+
+        // SCROLL CONTROLLER
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // CUSTOM CONFIRM MODAL
+        function customConfirm(message, callback) {
+            document.getElementById('confirm-modal-msg').innerText = message;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            
+            const btnYes = document.getElementById('confirm-btn-yes');
+            const btnNo = document.getElementById('confirm-btn-no');
+            
+            const newBtnYes = btnYes.cloneNode(true);
+            const newBtnNo = btnNo.cloneNode(true);
+            
+            btnYes.parentNode.replaceChild(newBtnYes, btnYes);
+            btnNo.parentNode.replaceChild(newBtnNo, btnNo);
+            
+            newBtnYes.addEventListener('click', () => {
+                document.getElementById('confirm-modal').classList.add('hidden');
+                callback(true);
+            });
+            newBtnNo.addEventListener('click', () => {
+                document.getElementById('confirm-modal').classList.add('hidden');
+                callback(false);
+            });
+        }
+
+        // TOAST NOTIFICATION UTILITY
+        function showNotification(msg, type = 'success') {
+            const toast = document.getElementById('toast-notif');
+            const toastMsg = document.getElementById('toast-message');
+
+            if (!toast || !toastMsg) return;
+
+            toastMsg.innerText = msg;
+            if (type === 'success') {
+                toast.classList.remove('border-rose-500', 'border-amber-500');
+                toast.classList.add('border-emerald-500');
+            } else if (type === 'warning') {
+                toast.classList.remove('border-emerald-500', 'border-rose-500');
+                toast.classList.add('border-amber-500');
+            } else {
+                toast.classList.remove('border-emerald-500', 'border-amber-500');
+                toast.classList.add('border-rose-500');
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 3500);
+        }
+
+        // RESET DAN CLEAR DATA ACTION
+        function triggerResetMock() {
+            customConfirm("Apakah Anda ingin mereset seluruh data ke simulasi Mock IT Gorontalo?", (confirmed) => {
+                if (confirmed) {
+                    bbmData = [...MOCK_DATA];
+                    localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+                    cancelEdit();
+                    renderDashboard();
+                    showNotification("Data monitoring direset ke data awal IT Gorontalo!");
+                }
+            });
+        }
+
+        function triggerClearAll() {
+            customConfirm("Apakah Anda yakin ingin menghapus seluruh log transaksi? Semua grafik dan analisis akan menjadi kosong.", (confirmed) => {
+                if (confirmed) {
+                    bbmData = [];
+                    localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+                    cancelEdit();
+                    renderDashboard();
+                    showNotification("Seluruh data log transaksi berhasil dibersihkan.", "error");
+                }
+            });
+        }
+
+        // FORM HANDLER: TAMBAH / UPDATE DATA PENYALURAN BARU
+        function handleAddData(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('edit-id').value;
+            const date = document.getElementById('input-date').value;
+            const shift = document.getElementById('input-shift').value;
+            const biosolar = parseFloat(document.getElementById('val-biosolar').value) || 0;
+            const pertalite = parseFloat(document.getElementById('val-pertalite').value) || 0;
+            const pertamax = parseFloat(document.getElementById('val-pertamax').value) || 0;
+            const dexlite = parseFloat(document.getElementById('val-dexlite').value) || 0;
+            const pertadex = parseFloat(document.getElementById('val-pertadex').value) || 0;
+
+            const recordData = {
+                tanggal: date,
+                shift: shift,
+                biosolar: biosolar,
+                pertalite: pertalite,
+                pertamax: pertamax,
+                dexlite: dexlite,
+                pertadex: pertadex
+            };
+
+            if (editId) {
+                // UPDATE MODE
+                const index = bbmData.findIndex(item => item.id === editId);
+                if (index >= 0) {
+                    bbmData[index] = { ...recordData, id: editId };
+                    showNotification(`Transaksi tanggal ${date} (${shift}) berhasil diperbarui!`);
+                }
+                cancelEdit();
+            } else {
+                // INSERT MODE (Cek Duplikat Tanggal + Shift)
+                const isDuplicate = bbmData.some(item => item.tanggal === date && item.shift === shift);
+                if (isDuplicate) {
+                    customConfirm(`Data untuk tanggal ${date} dengan ${shift} sudah terdaftar. Ingin menimpa data yang lama?`, (overwrite) => {
+                        if (overwrite) {
+                            const duplicateIndex = bbmData.findIndex(item => item.tanggal === date && item.shift === shift);
+                            if (duplicateIndex >= 0) {
+                                bbmData[duplicateIndex] = { ...recordData, id: bbmData[duplicateIndex].id };
+                                finishFormSave();
+                            }
+                        }
+                    });
+                    return; 
+                } else {
+                    bbmData.push({ ...recordData, id: Date.now().toString() });
+                    showNotification(`Transaksi tanggal ${date} (${shift}) berhasil ditambahkan!`);
+                }
+            }
+
+            finishFormSave();
+        }
+
+        function finishFormSave() {
+            bbmData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+            localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+            document.getElementById('form-penyaluran').reset();
+            renderDashboard();
+        }
+
+        // TRIGGER EDIT MODE
+        function editData(id) {
+            const record = bbmData.find(item => item.id === id);
+            if (!record) return;
+
+            document.getElementById('edit-id').value = record.id;
+            document.getElementById('input-date').value = record.tanggal;
+            document.getElementById('input-shift').value = record.shift;
+            document.getElementById('val-biosolar').value = record.biosolar;
+            document.getElementById('val-pertalite').value = record.pertalite;
+            document.getElementById('val-pertamax').value = record.pertamax;
+            document.getElementById('val-dexlite').value = record.dexlite;
+            document.getElementById('val-pertadex').value = record.pertadex;
+
+            document.getElementById('submit-btn-text').innerText = "Perbarui Data";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            
+            const formTitle = document.getElementById('form-title-text');
+            const formIcon = document.getElementById('form-icon-header');
+            if (formTitle) formTitle.innerText = "Edit Penyaluran";
+            if (formIcon) {
+                formIcon.setAttribute('data-lucide', 'pencil-line');
+                lucide.createIcons();
+            }
+
+            document.getElementById('form-penyaluran').scrollIntoView({ behavior: 'smooth' });
+            showNotification("Mode edit aktif! Silakan perbarui nilai pada form.", "warning");
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-id').value = "";
+            document.getElementById('form-penyaluran').reset();
+            document.getElementById('submit-btn-text').innerText = "Simpan & Perbarui";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            
+            const formTitle = document.getElementById('form-title-text');
+            const formIcon = document.getElementById('form-icon-header');
+            if (formTitle) formTitle.innerText = "Input Penyaluran";
+            if (formIcon) {
+                formIcon.setAttribute('data-lucide', 'plus-circle');
+                lucide.createIcons();
+            }
+        }
+
+        // DELETE DATA SINGLE ROW
+        function deleteData(id) {
+            customConfirm("Apakah Anda yakin ingin menghapus log transaksi ini?", (confirmed) => {
+                if (confirmed) {
+                    bbmData = bbmData.filter(item => item.id !== id);
+                    localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+                    if (document.getElementById('edit-id').value === id) {
+                        cancelEdit();
+                    }
+                    renderDashboard();
+                    showNotification("Log transaksi berhasil dihapus.", "warning");
+                }
+            });
+        }
+
+        // DYNAMIC ANALYSIS ENGINE (Kalkulasi Utama & Integrasi Tren)
+        function renderDashboard() {
+            renderTable();
+            calculateKPIs();
+            renderMainDistributionChart();
+            renderProductShareChart();
+            renderWeeklyPatternChart();
+            generateDynamicRecommendations();
+        }
+
+        // 1. CARDS KPI CALCULATIONS (Menghormati Saringan yang Aktif secara Integratif)
+        function calculateKPIs() {
+            const statTotalYtd = document.getElementById('stat-total-ytd');
+            const statTotalYtdSubtitle = document.getElementById('stat-total-ytd-subtitle');
+            
+            if (bbmData.length === 0) {
+                statTotalYtd.innerText = "0.00 KL";
+                document.getElementById('stat-crowded-day').innerText = "N/A";
+                document.getElementById('stat-peak-month').innerText = "N/A";
+                document.getElementById('stat-peak-month-vol').innerText = "Volume: 0.00 KL";
+                document.getElementById('stat-top-product').innerText = "N/A";
+                document.getElementById('stat-top-product-pct').innerText = "Share: 0%";
+                return;
+            }
+
+            // A. Total Volume Terpilih Berdasarkan Filter Aktif
+            let grandTotalActive = 0;
+            let totalPerProductGlobal = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            let totalOverallAllProducts = 0;
+
+            const filteredDataByShift = bbmData.filter(item => currentChartShift === 'all' || item.shift === currentChartShift);
+
+            filteredDataByShift.forEach(item => {
+                const totalRow = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                totalOverallAllProducts += totalRow;
+
+                totalPerProductGlobal.biosolar += item.biosolar;
+                totalPerProductGlobal.pertalite += item.pertalite;
+                totalPerProductGlobal.pertamax += item.pertamax;
+                totalPerProductGlobal.dexlite += item.dexlite;
+                totalPerProductGlobal.pertadex += item.pertadex;
+
+                if (currentChartProduct === 'all') {
+                    grandTotalActive += totalRow;
+                } else {
+                    grandTotalActive += item[currentChartProduct];
+                }
+            });
+
+            statTotalYtd.innerText = grandTotalActive.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL";
+            
+            // Subtitle Update
+            const activeProdLabel = currentChartProduct === 'all' ? 'Semua Produk' : productsConfig[currentChartProduct].label;
+            const activeShiftLabel = currentChartShift === 'all' ? 'Semua Shift' : currentChartShift;
+            statTotalYtdSubtitle.innerHTML = `<i data-lucide="filter" class="w-3 h-3 inline"></i> ${activeProdLabel} (${activeShiftLabel})`;
+
+            // B. Hari Paling Padat (Crowded Day based on Active Product Filter)
+            let daysSum = [0, 0, 0, 0, 0, 0, 0];
+            let daysCount = [0, 0, 0, 0, 0, 0, 0];
+
+            filteredDataByShift.forEach(item => {
+                const dateObj = new Date(item.tanggal);
+                const dayIndex = dateObj.getDay(); 
+                
+                let valToSum = 0;
+                if (currentChartProduct === 'all') {
+                    valToSum = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                } else {
+                    valToSum = item[currentChartProduct];
+                }
+
+                daysSum[dayIndex] += valToSum;
+                daysCount[dayIndex]++;
+            });
+
+            let maxAvg = -1;
+            let busiestDayIdx = -1;
+            for (let i = 0; i < 7; i++) {
+                if (daysCount[i] > 0) {
+                    const avg = daysSum[i] / daysCount[i];
+                    if (avg > maxAvg) {
+                        maxAvg = avg;
+                        busiestDayIdx = i;
+                    }
+                }
+            }
+            if (busiestDayIdx !== -1) {
+                document.getElementById('stat-crowded-day').innerText = hariIndo[busiestDayIdx].toUpperCase();
+                document.getElementById('stat-crowded-day-detail').innerText = `Rerata: ${maxAvg.toFixed(2)} KL/hari`;
+            }
+
+            // C. Bulan Puncak Penyaluran
+            let monthTotals = Array(12).fill(0);
+            filteredDataByShift.forEach(item => {
+                const dateObj = new Date(item.tanggal);
+                const mIdx = dateObj.getMonth();
+                
+                let valToSum = 0;
+                if (currentChartProduct === 'all') {
+                    valToSum = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                } else {
+                    valToSum = item[currentChartProduct];
+                }
+                
+                monthTotals[mIdx] += valToSum;
+            });
+
+            let maxMonthVol = -1;
+            let peakMonthIdx = -1;
+            for (let i = 0; i < 12; i++) {
+                if (monthTotals[i] > maxMonthVol && monthTotals[i] > 0) {
+                    maxMonthVol = monthTotals[i];
+                    peakMonthIdx = i;
+                }
+            }
+            if (peakMonthIdx !== -1) {
+                document.getElementById('stat-peak-month').innerText = bulanIndo[peakMonthIdx].toUpperCase();
+                document.getElementById('stat-peak-month-vol').innerText = `Volume: ${maxMonthVol.toLocaleString('id-ID', { maximumFractionDigits: 1 })} KL`;
+            } else {
+                document.getElementById('stat-peak-month').innerText = "-";
+            }
+
+            // D. Kontributor Utama
+            let topProdKey = "";
+            let topProdVal = -1;
+            Object.keys(totalPerProductGlobal).forEach(key => {
+                if (totalPerProductGlobal[key] > topProdVal) {
+                    topProdVal = totalPerProductGlobal[key];
+                    topProdKey = key;
+                }
+            });
+
+            if (topProdKey && totalOverallAllProducts > 0) {
+                const percentage = (topProdVal / totalOverallAllProducts) * 100;
+                document.getElementById('stat-top-product').innerText = productsConfig[topProdKey].label;
+                document.getElementById('stat-top-product-pct').innerText = `Share: ${percentage.toFixed(1)}% dari total volume`;
+            }
+            
+            lucide.createIcons();
+        }
+
+        // SWITCH FILTERS
+        function switchChartScope(scope) {
+            currentChartScope = scope;
+            const scopes = ['daily', 'monthly', 'quarterly'];
+            scopes.forEach(sc => {
+                const btn = document.getElementById(`btn-scope-${sc}`);
+                if (sc === scope) {
+                    btn.className = "px-2 py-1 rounded-md font-medium transition bg-blue-600 text-white";
+                } else {
+                    btn.className = "px-2 py-1 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
+                }
+            });
+            renderMainDistributionChart();
+        }
+
+        function switchChartShift(shift) {
+            currentChartShift = shift;
+            const shifts = ['all', 'Shift I', 'Shift II'];
+            const btnIds = { 'all': 'btn-shift-all', 'Shift I': 'btn-shift-s1', 'Shift II': 'btn-shift-s2' };
+            
+            shifts.forEach(sh => {
+                const btn = document.getElementById(btnIds[sh]);
+                if (sh === shift) {
+                    btn.className = "px-2 py-1 rounded-md font-semibold transition bg-blue-600 text-white";
+                } else {
+                    btn.className = "px-2 py-1 rounded-md font-semibold transition text-brand-textSecondary hover:text-white";
+                }
+            });
+
+            renderDashboard();
+        }
+
+        function switchChartProduct(product) {
+            currentChartProduct = product;
+            
+            // Ubah Header Grafik / Custom Donut jika produk disaring
+            const shareTitle = document.getElementById('share-chart-title');
+            const shareDesc = document.getElementById('share-chart-desc');
+            const shareIcon = document.getElementById('share-chart-icon');
+
+            if (product === 'all') {
+                shareTitle.innerText = "Komposisi Produk BBM";
+                shareDesc.innerText = "Proporsi kontribusi volume penyaluran";
+                shareIcon.setAttribute('data-lucide', 'pie-chart');
+            } else {
+                const prodName = productsConfig[product].label;
+                shareTitle.innerText = `Penyebaran Shift: ${prodName}`;
+                shareDesc.innerText = "Distribusi volume penyaluran Shift I vs Shift II";
+                shareIcon.setAttribute('data-lucide', 'clock-3');
+            }
+            lucide.createIcons();
+
+            renderDashboard();
+        }
+
+        // 2. RENDER MAIN LINE/AREA CHART (DISTRIBUSI BBM) - FILTER INTEGRATION
+        function renderMainDistributionChart() {
+            const ctx = document.getElementById('mainDistributionChart').getContext('2d');
+            if (mainChart) {
+                mainChart.destroy();
+            }
+
+            let labels = [];
+            let datasetsData = {
+                biosolar: [],
+                pertalite: [],
+                pertamax: [],
+                dexlite: [],
+                pertadex: []
+            };
+
+            const filteredData = bbmData.filter(item => currentChartShift === 'all' || item.shift === currentChartShift);
+
+            if (filteredData.length === 0) {
+                mainChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: ['Belum Ada Data'], datasets: [] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+                return;
+            }
+
+            if (currentChartScope === 'daily') {
+                // Agregasi Tanggal (Menggabungkan Shift I dan Shift II jika filter Shift adalah 'all')
+                let groupedByDate = {};
+                filteredData.forEach(item => {
+                    if (!groupedByDate[item.tanggal]) {
+                        groupedByDate[item.tanggal] = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+                    }
+                    groupedByDate[item.tanggal].biosolar += item.biosolar;
+                    groupedByDate[item.tanggal].pertalite += item.pertalite;
+                    groupedByDate[item.tanggal].pertamax += item.pertamax;
+                    groupedByDate[item.tanggal].dexlite += item.dexlite;
+                    groupedByDate[item.tanggal].pertadex += item.pertadex;
+                });
+
+                const sortedDates = Object.keys(groupedByDate).sort((a,b) => new Date(a) - new Date(b));
+
+                labels = sortedDates.map(tgl => {
+                    const d = new Date(tgl);
+                    return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().substring(2)}`;
+                });
+
+                Object.keys(datasetsData).forEach(pKey => {
+                    datasetsData[pKey] = sortedDates.map(tgl => groupedByDate[tgl][pKey]);
+                });
+
+            } else if (currentChartScope === 'monthly') {
+                let monthlySummary = Array(12).fill(null).map(() => ({ biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false }));
+                filteredData.forEach(item => {
+                    const mIdx = new Date(item.tanggal).getMonth();
+                    monthlySummary[mIdx].biosolar += item.biosolar;
+                    monthlySummary[mIdx].pertalite += item.pertalite;
+                    monthlySummary[mIdx].pertamax += item.pertamax;
+                    monthlySummary[mIdx].dexlite += item.dexlite;
+                    monthlySummary[mIdx].pertadex += item.pertadex;
+                    monthlySummary[mIdx].active = true;
+                });
+
+                bulanIndo.forEach((bName, idx) => {
+                    if (monthlySummary[idx].active) {
+                        labels.push(bName);
+                        Object.keys(datasetsData).forEach(pKey => {
+                            datasetsData[pKey].push(monthlySummary[idx][pKey]);
+                        });
+                    }
+                });
+            } else if (currentChartScope === 'quarterly') {
+                let qSummary = {
+                    'Triwulan I (Q1)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false },
+                    'Triwulan II (Q2)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false },
+                    'Triwulan III (Q3)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false },
+                    'Triwulan IV (Q4)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false }
+                };
+
+                filteredData.forEach(item => {
+                    const mIdx = new Date(item.tanggal).getMonth();
+                    let qKey = 'Triwulan I (Q1)';
+                    if (mIdx >= 3 && mIdx <= 5) qKey = 'Triwulan II (Q2)';
+                    else if (mIdx >= 6 && mIdx <= 8) qKey = 'Triwulan III (Q3)';
+                    else if (mIdx >= 9 && mIdx <= 11) qKey = 'Triwulan IV (Q4)';
+
+                    qSummary[qKey].biosolar += item.biosolar;
+                    qSummary[qKey].pertalite += item.pertalite;
+                    qSummary[qKey].pertamax += item.pertamax;
+                    qSummary[qKey].dexlite += item.dexlite;
+                    qSummary[qKey].pertadex += item.pertadex;
+                    qSummary[qKey].active = true;
+                });
+
+                Object.keys(qSummary).forEach(qKey => {
+                    if (qSummary[qKey].active) {
+                        labels.push(qKey);
+                        Object.keys(datasetsData).forEach(pKey => {
+                            datasetsData[pKey].push(qSummary[qKey][pKey]);
+                        });
+                    }
+                });
+            }
+
+            // Susun Dataset Berdasarkan Filter Produk
+            let datasets = [];
+            Object.keys(productsConfig).forEach(pKey => {
+                // Jika produk disaring dan bukan produk ini, jangan render (kecuali jika filter 'all')
+                if (currentChartProduct !== 'all' && currentChartProduct !== pKey) {
+                    return; 
+                }
+
+                const conf = productsConfig[pKey];
+                datasets.push({
+                    label: conf.label,
+                    data: datasetsData[pKey],
+                    borderColor: conf.color,
+                    backgroundColor: conf.color + '10', 
+                    fill: true,
+                    tension: 0.25,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: conf.color,
+                    pointBorderColor: '#0f172a',
+                    pointHoverRadius: 6,
+                    pointRadius: 4
+                });
+            });
+
+            // Atur responsive horizontal scroll grafik
+            const chartContainerWidth = labels.length * 40;
+            const canvasEl = document.getElementById('mainDistributionChart');
+            const parentWidth = canvasEl.parentElement.parentElement.clientWidth;
+            
+            if (chartContainerWidth > parentWidth) {
+                canvasEl.parentElement.style.width = `${chartContainerWidth}px`;
+            } else {
+                canvasEl.parentElement.style.width = '100%';
+            }
+
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: '500' },
+                                boxWidth: 8,
+                                usePointStyle: true,
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#fff',
+                            bodyColor: '#f8fafc',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 10,
+                            bodyFont: { family: 'Plus Jakarta Sans', size: 11 },
+                            titleFont: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw.toFixed(2)} KL`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#1e293b', drawOnChartArea: true },
+                            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: '#1e293b' },
+                            ticks: { 
+                                color: '#94a3b8', 
+                                font: { family: 'Plus Jakarta Sans', size: 10 },
+                                callback: function(value) { return value + ' KL'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. RENDER DONUT/PIE CHART: KOMPOSISI SHARE BBM (DINAMIS SENSITIF SHIFT JIKA FILTER PRODUK AKTIF)
+        function renderProductShareChart() {
+            const ctx = document.getElementById('productShareChart').getContext('2d');
+            if (productShareChart) {
+                productShareChart.destroy();
+            }
+
+            const filteredDataByShift = bbmData.filter(item => currentChartShift === 'all' || item.shift === currentChartShift);
+
+            if (filteredDataByShift.length === 0) {
+                productShareChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [] } });
+                return;
+            }
+
+            let chartLabels = [];
+            let chartColors = [];
+            let chartDataValues = [];
+
+            if (currentChartProduct === 'all') {
+                // MODE A: Tampilkan Proporsi Semua Produk
+                let totals = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+                let grandTotal = 0;
+
+                filteredDataByShift.forEach(item => {
+                    totals.biosolar += item.biosolar;
+                    totals.pertalite += item.pertalite;
+                    totals.pertamax += item.pertamax;
+                    totals.dexlite += item.dexlite;
+                    totals.pertadex += item.pertadex;
+                });
+                grandTotal = totals.biosolar + totals.pertalite + totals.pertamax + totals.dexlite + totals.pertadex;
+
+                chartLabels = Object.keys(productsConfig).map(k => productsConfig[k].label);
+                chartColors = Object.keys(productsConfig).map(k => productsConfig[k].color);
+                chartDataValues = Object.keys(productsConfig).map(k => totals[k]);
+
+                productShareChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartDataValues,
+                            backgroundColor: chartColors,
+                            borderColor: '#1e293b',
+                            borderWidth: 3,
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                // Render Manual Legend
+                const legendContainer = document.getElementById('share-product-legend');
+                legendContainer.innerHTML = '';
+                
+                Object.keys(productsConfig).forEach(pKey => {
+                    const conf = productsConfig[pKey];
+                    const pct = grandTotal > 0 ? ((totals[pKey] / grandTotal) * 100).toFixed(1) : "0.0";
+                    legendContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border-brand-border/40">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full" style="background-color: ${conf.color};"></span>
+                                <span class="font-medium text-white">${conf.label}</span>
+                            </div>
+                            <div class="font-mono text-xs">
+                                <span class="text-brand-textSecondary mr-2">${totals[pKey].toFixed(1)} KL</span>
+                                <span class="text-emerald-400 font-semibold">${pct}%</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } else {
+                // MODE B: INTEGRASI SENSIONAL - Tampilkan pembagian Shift I vs Shift II khusus untuk Produk ini!
+                let shiftTotals = { 'Shift I': 0, 'Shift II': 0 };
+                
+                bbmData.forEach(item => {
+                    if (shiftTotals[item.shift] !== undefined) {
+                        shiftTotals[item.shift] += item[currentChartProduct];
+                    }
+                });
+
+                const grandTotalShift = shiftTotals['Shift I'] + shiftTotals['Shift II'];
+                chartLabels = ['Shift I (Pagi)', 'Shift II (Sore)'];
+                chartColors = ['#3b82f6', '#f97316']; // Blue & Orange
+                chartDataValues = [shiftTotals['Shift I'], shiftTotals['Shift II']];
+
+                productShareChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartDataValues,
+                            backgroundColor: chartColors,
+                            borderColor: '#1e293b',
+                            borderWidth: 3,
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                // Render Manual Legend Shift
+                const legendContainer = document.getElementById('share-product-legend');
+                legendContainer.innerHTML = `
+                    <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border border-blue-500/20">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                            <span class="font-medium text-white">Shift I (Pagi - Sore)</span>
+                        </div>
+                        <div class="font-mono text-xs">
+                            <span class="text-brand-textSecondary mr-2">${shiftTotals['Shift I'].toFixed(1)} KL</span>
+                            <span class="text-blue-400 font-semibold">${grandTotalShift > 0 ? ((shiftTotals['Shift I'] / grandTotalShift)*100).toFixed(1) : 0}%</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border border-orange-500/20">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                            <span class="font-medium text-white">Shift II (Sore - Pagi)</span>
+                        </div>
+                        <div class="font-mono text-xs">
+                            <span class="text-brand-textSecondary mr-2">${shiftTotals['Shift II'].toFixed(1)} KL</span>
+                            <span class="text-orange-400 font-semibold">${grandTotalShift > 0 ? ((shiftTotals['Shift II'] / grandTotalShift)*100).toFixed(1) : 0}%</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 4. RENDER BAR CHART: ANALISIS POLA MINGGUAN (SENSITIF PRODUK)
+        function renderWeeklyPatternChart() {
+            const ctx = document.getElementById('weeklyPatternChart').getContext('2d');
+            if (weeklyPatternChart) {
+                weeklyPatternChart.destroy();
+            }
+
+            const filteredData = bbmData.filter(item => currentChartShift === 'all' || item.shift === currentChartShift);
+
+            if (filteredData.length === 0) {
+                weeklyPatternChart = new Chart(ctx, { type: 'bar', data: { datasets: [] } });
+                return;
+            }
+
+            // Hitung rata-rata penyaluran harian teragregasi berdasarkan filter produk
+            let dailyTotalsMap = {};
+            filteredData.forEach(item => {
+                if (!dailyTotalsMap[item.tanggal]) dailyTotalsMap[item.tanggal] = 0;
+                
+                let valToSum = 0;
+                if (currentChartProduct === 'all') {
+                    valToSum = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                } else {
+                    valToSum = item[currentChartProduct];
+                }
+                dailyTotalsMap[item.tanggal] += valToSum;
+            });
+
+            let sums = Array(7).fill(0);
+            let counts = Array(7).fill(0);
+
+            Object.keys(dailyTotalsMap).forEach(tanggalStr => {
+                const d = new Date(tanggalStr).getDay();
+                sums[d] += dailyTotalsMap[tanggalStr];
+                counts[d]++;
+            });
+
+            const avgData = sums.map((s, idx) => counts[idx] > 0 ? (s / counts[idx]) : 0);
+
+            const orderedLabels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+            const orderedIndices = [1, 2, 3, 4, 5, 6, 0]; 
+            const finalChartData = orderedIndices.map(idx => avgData[idx]);
+
+            const maxVal = Math.max(...finalChartData);
+            const activeColor = currentChartProduct === 'all' ? '#f59e0b' : productsConfig[currentChartProduct].color;
+            const backgroundColors = finalChartData.map(v => {
+                if (v === maxVal && v > 0) return activeColor; 
+                return '#475569'; 
+            });
+
+            weeklyPatternChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: orderedLabels,
+                    datasets: [{
+                        label: 'Rerata Penyaluran Terpilih (KL)',
+                        data: finalChartData,
+                        backgroundColor: backgroundColors,
+                        borderRadius: 6,
+                        borderWidth: 0,
+                        maxBarThickness: 45
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            callbacks: {
+                                label: function(context) { return ` Rata-rata: ${context.raw.toFixed(2)} KL`; }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        },
+                        y: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 5. PENYUSUNAN TABEL TRANSAKSI DETAILED DENGAN EDIT & HAPUS
+        function renderTable() {
+            const tbody = document.getElementById('table-body-penyaluran');
+            const searchVal = document.getElementById('search-data').value.toLowerCase();
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const filtered = bbmData.filter(item => item.tanggal.toLowerCase().includes(searchVal));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-8 text-brand-textSecondary text-xs">
+                            Tidak ada transaksi terdaftar yang cocok dengan pencarian.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            [...filtered].reverse().forEach(item => {
+                const dateObj = new Date(item.tanggal);
+                const formatDay = hariIndo[dateObj.getDay()];
+                const total = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-4 font-medium text-white">
+                            <span class="text-[9px] text-brand-textSecondary block uppercase font-bold">${formatDay}</span>
+                            ${item.tanggal}
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.shift === 'Shift I' ? 'bg-blue-500/10 text-blue-400' : 'bg-orange-500/10 text-orange-400'} border border-slate-700">
+                                ${item.shift}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-mono text-emerald-400 font-semibold">${item.biosolar.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-lime-400 font-semibold">${item.pertalite.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-blue-400 font-semibold">${item.pertamax.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-orange-400 font-semibold">${item.dexlite.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-red-400 font-semibold">${item.pertadex.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono font-bold text-white bg-slate-800/10">${total.toFixed(2)}</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="editData('${item.id}')" class="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-1.5 rounded transition" title="Ubah Data">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteData('${item.id}')" class="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-1.5 rounded transition" title="Hapus Data">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            lucide.createIcons();
+        }
+
+        // 6. GENERATE ANALISIS PREDIKTIF & STRATEGIS OTOMATIS (SENSITIF PRODUK - PRE-EMPTIVE OUTAGE ALERTS)
+        function generateDynamicRecommendations() {
+            const container = document.getElementById('recommendation-cards-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filteredData = bbmData.filter(item => currentChartShift === 'all' || item.shift === currentChartShift);
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-brand-textSecondary py-4">Data belum cukup untuk menganalisis tren stok.</div>`;
+                document.getElementById('dynamic-warning-text').innerText = "Belum ada data untuk diproses.";
+                return;
+            }
+
+            // Hitung rata-rata penyaluran harian
+            let dailyTotalsMap = {};
+            filteredData.forEach(item => {
+                if (!dailyTotalsMap[item.tanggal]) {
+                    dailyTotalsMap[item.tanggal] = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+                }
+                dailyTotalsMap[item.tanggal].biosolar += item.biosolar;
+                dailyTotalsMap[item.tanggal].pertalite += item.pertalite;
+                dailyTotalsMap[item.tanggal].pertamax += item.pertamax;
+                dailyTotalsMap[item.tanggal].dexlite += item.dexlite;
+                dailyTotalsMap[item.tanggal].pertadex += item.pertadex;
+            });
+
+            const uniqueDaysCount = Object.keys(dailyTotalsMap).length;
+            let averages = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            
+            Object.keys(dailyTotalsMap).forEach(tgl => {
+                Object.keys(averages).forEach(pKey => {
+                    averages[pKey] += dailyTotalsMap[tgl][pKey];
+                });
+            });
+
+            Object.keys(averages).forEach(pKey => {
+                averages[pKey] = averages[pKey] / uniqueDaysCount;
+            });
+
+            // Lonjakan puncak harian berdasarkan filter produk yang aktif
+            let maxDailyDistributionActive = 0;
+            let peakDate = "";
+            Object.keys(dailyTotalsMap).forEach(tgl => {
+                let totalActive = 0;
+                if (currentChartProduct === 'all') {
+                    totalActive = dailyTotalsMap[tgl].biosolar + dailyTotalsMap[tgl].pertalite + dailyTotalsMap[tgl].pertamax + dailyTotalsMap[tgl].dexlite + dailyTotalsMap[tgl].pertadex;
+                } else {
+                    totalActive = dailyTotalsMap[tgl][currentChartProduct];
+                }
+
+                if (totalActive > maxDailyDistributionActive) {
+                    maxDailyDistributionActive = totalActive;
+                    peakDate = tgl;
+                }
+            });
+
+            // Cari hari paling sibuk berdasarkan produk yang disaring
+            let daysSum = Array(7).fill(0);
+            let daysCount = Array(7).fill(0);
+            Object.keys(dailyTotalsMap).forEach(tgl => {
+                const dIdx = new Date(tgl).getDay();
+                let valToSum = 0;
+                if (currentChartProduct === 'all') {
+                    valToSum = dailyTotalsMap[tgl].biosolar + dailyTotalsMap[tgl].pertalite + dailyTotalsMap[tgl].pertamax + dailyTotalsMap[tgl].dexlite + dailyTotalsMap[tgl].pertadex;
+                } else {
+                    valToSum = dailyTotalsMap[tgl][currentChartProduct];
+                }
+                daysSum[dIdx] += valToSum;
+                daysCount[dIdx]++;
+            });
+
+            let busyDayIdx = 1;
+            let maxAvg = 0;
+            for (let i = 0; i < 7; i++) {
+                if (daysCount[i] > 0) {
+                    const avg = daysSum[i] / daysCount[i];
+                    if (avg > maxAvg) {
+                        maxAvg = avg;
+                        busyDayIdx = i;
+                    }
+                }
+            }
+
+            // Render rekomendasi per produk (jika produk disaring, kita beri penyorotan khusus)
+            Object.keys(productsConfig).forEach(pKey => {
+                const conf = productsConfig[pKey];
+                const avg = averages[pKey];
+                
+                let safetyStockPct = 10;
+                let status = "NORMAL";
+                let badgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+
+                if (avg > 80) {
+                    safetyStockPct = 25;
+                    status = "HIGH MONITOR";
+                    badgeColor = "bg-red-500/20 text-red-400 border-red-500/30";
+                } else if (avg > 30) {
+                    safetyStockPct = 15;
+                    status = "MODERATE";
+                    badgeColor = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+                }
+
+                // Efek visual jika produk ini sedang dipilih
+                const isSelected = currentChartProduct === pKey;
+                const borderHighlight = currentChartProduct === 'all' ? 'border-brand-border' : (isSelected ? `border-[2px]` : 'border-brand-border opacity-40');
+                const glowShadow = isSelected ? `shadow-[0_0_15px_rgba(59,130,246,0.15)]` : '';
+
+                container.innerHTML += `
+                    <div class="bg-slate-900/60 rounded-xl p-4 space-y-3 transition-all duration-300 ${borderHighlight} ${glowShadow}" style="${isSelected ? 'border-color: ' + conf.color : ''}">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-semibold text-white truncate block max-w-[110px]">${conf.label}</span>
+                            <span class="text-[9px] px-2 py-0.5 rounded-full border ${badgeColor} font-bold">${status}</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-brand-textSecondary block">Saran Stock</span>
+                            <h4 class="text-xl font-bold" style="color: ${conf.color}">+${safetyStockPct}% Vol</h4>
+                        </div>
+                        <p class="text-[10px] text-brand-textSecondary leading-snug">
+                            Maksimalisasi stok tangki SPBU sebesar <strong>${(avg * (1 + safetyStockPct/100)).toFixed(1)} KL</strong> sebelum memasuki hari <strong>${hariIndo[busyDayIdx]}</strong>.
+                        </p>
+                    </div>
+                `;
+            });
+
+            // Set warning text box secara dinamis, mengedepankan "masalah sebelum terjadi"
+            const formatPeakDateStr = peakDate ? new Date(peakDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : "-";
+            const shiftWarningText = currentChartShift === 'all' ? "seluruh shift" : `<strong>${currentChartShift}</strong>`;
+            const productText = currentChartProduct === 'all' ? "agregat seluruh produk BBM" : `produk <strong>${productsConfig[currentChartProduct].label}</strong>`;
+            
+            // Analisis Prediktif Skenario Masalah
+            let predictiveAnalysisText = "";
+            if (currentChartProduct === 'all') {
+                predictiveAnalysisText = `Berdasarkan pola integrasi harian, hari <strong>${hariIndo[busyDayIdx].toUpperCase()}</strong> mencatatkan beban muatan tertinggi di IT Gorontalo. Disarankan untuk memprioritaskan antrean armada tangki BBM jenis PERTALITE dan BIOSOLAR 12 jam sebelum puncak kemacetan di hari ${hariIndo[busyDayIdx]} guna menghindari kemacetan (*bottleneck*) di gerbang pengisian.`;
+            } else {
+                const selectedProdLabel = productsConfig[currentChartProduct].label;
+                predictiveAnalysisText = `Khusus untuk produk <strong>${selectedProdLabel}</strong>, lonjakan penyaluran kritis terdeteksi menjelang hari <strong>${hariIndo[busyDayIdx]}</strong>. Detektor prediktif mengindikasikan potensi keterlambatan distribusi di SPBU Gorontalo jika ketahanan stok tangki SPBU di bawah level aman rata-rata harian sebesar <strong>${averages[currentChartProduct].toFixed(2)} KL</strong>.`;
+            }
+
+            document.getElementById('dynamic-warning-text').innerHTML = `
+                Sistem mendeteksi lonjakan distribusi harian tertinggi untuk ${productText} pada tanggal <strong>${formatPeakDateStr}</strong> dengan total pengeluaran volume mencapai <strong>${maxDailyDistributionActive.toFixed(2)} KL</strong> pada ${shiftWarningText}.
+                <br/><span class="text-white font-semibold">ANALISIS RISIKO & ANOMALI:</span> ${predictiveAnalysisText}
+                <br/><span class="text-emerald-400 font-semibold">TINDAKAN REKOMENDASI PRE-EMPTIVE:</span> Lakukan koordinasi bersama Agen/SPBU agar menjadwalkan penebusan DO (*Delivery Order*) lebih awal pada hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]} untuk memecah kepadatan distribusi armada tangki.
+            `;
+        }
+
+        // 7. MODAL IMPORT BULK JSON
+        function openImportModal() {
+            document.getElementById('import-modal').classList.remove('hidden');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.add('hidden');
+        }
+
+        function processBulkImport() {
+            const rawJson = document.getElementById('import-json-area').value.trim();
+            if (!rawJson) {
+                showNotification("Area teks kosong.", "error");
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(rawJson);
+                if (!Array.isArray(parsed)) {
+                    showNotification("Format data harus berupa array objek JSON.", "error");
+                    return;
+                }
+
+                let importedCount = 0;
+                parsed.forEach(item => {
+                    if (item.tanggal && item.shift && (item.biosolar !== undefined || item.pertalite !== undefined)) {
+                        const existingIdx = bbmData.findIndex(exist => exist.tanggal === item.tanggal && exist.shift === item.shift);
+                        const record = {
+                            id: existingIdx >= 0 ? bbmData[existingIdx].id : (Date.now() + importedCount).toString(),
+                            tanggal: item.tanggal,
+                            shift: item.shift,
+                            biosolar: parseFloat(item.biosolar) || 0,
+                            pertalite: parseFloat(item.pertalite) || 0,
+                            pertamax: parseFloat(item.pertamax) || 0,
+                            dexlite: parseFloat(item.dexlite) || 0,
+                            pertadex: parseFloat(item.pertadex) || 0
+                        };
+
+                        if (existingIdx >= 0) {
+                            bbmData[existingIdx] = record;
+                        } else {
+                            bbmData.push(record);
+                        }
+                        importedCount++;
+                    }
+                });
+
+                bbmData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+                localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+
+                cancelEdit();
+                renderDashboard();
+                closeImportModal();
+                showNotification(`Berhasil mengimpor/memperbarui ${importedCount} data penyaluran!`);
+                document.getElementById('import-json-area').value = '';
+            } catch (err) {
+                showNotification("Gagal parsing JSON. Pastikan format valid.", "error");
+            }
+        }
+
+        // 8. EXCEL EXPORTER - 3 TAB REKAPITULASI INTEGRAL
+        function exportToExcel() {
+            if (bbmData.length === 0) {
+                showNotification("Tidak ada data transaksi untuk diekspor ke Excel.", "error");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            // TAB 1: DATA TRANSAKSI UTAMA (Log Harian dan Shift)
+            const listTransaksi = [...bbmData].sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal)).map(item => {
+                const d = new Date(item.tanggal);
+                const formatDay = hariIndo[d.getDay()];
+                const total = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                return {
+                    "Hari": formatDay,
+                    "Tanggal": item.tanggal,
+                    "Shift": item.shift,
+                    "BIOSOLAR B40 (KL)": item.biosolar,
+                    "PERTALITE (KL)": item.pertalite,
+                    "PERTAMAX (KL)": item.pertamax,
+                    "DEXLITE (KL)": item.dexlite,
+                    "PERTADEX (KL)": item.pertadex,
+                    "TOTAL PENYALURAN (KL)": total
+                };
+            });
+
+            const wsTransaksi = XLSX.utils.json_to_sheet(listTransaksi);
+            XLSX.utils.book_append_sheet(wb, wsTransaksi, "Data Detail Transaksi");
+
+            // TAB 2: RINGKASAN AKUMULATIF BULANAN
+            let monthlySummary = Array(12).fill(null).map(() => ({ biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false }));
+            bbmData.forEach(item => {
+                const mIdx = new Date(item.tanggal).getMonth();
+                monthlySummary[mIdx].biosolar += item.biosolar;
+                monthlySummary[mIdx].pertalite += item.pertalite;
+                monthlySummary[mIdx].pertamax += item.pertamax;
+                monthlySummary[mIdx].dexlite += item.dexlite;
+                monthlySummary[mIdx].pertadex += item.pertadex;
+                monthlySummary[mIdx].active = true;
+            });
+
+            const listBulanan = [];
+            bulanIndo.forEach((bName, idx) => {
+                if (monthlySummary[idx].active) {
+                    const s = monthlySummary[idx];
+                    const total = s.biosolar + s.pertalite + s.pertamax + s.dexlite + s.pertadex;
+                    listBulanan.push({
+                        "Bulan": bName,
+                        "BIOSOLAR B40 (KL)": parseFloat(s.biosolar.toFixed(2)),
+                        "PERTALITE (KL)": parseFloat(s.pertalite.toFixed(2)),
+                        "PERTAMAX (KL)": parseFloat(s.pertamax.toFixed(2)),
+                        "DEXLITE (KL)": parseFloat(s.dexlite.toFixed(2)),
+                        "PERTADEX (KL)": parseFloat(s.pertadex.toFixed(2)),
+                        "TOTAL VOLUME BULANAN (KL)": parseFloat(total.toFixed(2))
+                    });
+                }
+            });
+
+            const wsBulanan = XLSX.utils.json_to_sheet(listBulanan);
+            XLSX.utils.book_append_sheet(wb, wsBulanan, "Ringkasan Per Bulan");
+
+            // TAB 3: TREN CROWDED WEEKDAYS
+            let dailyTotalsMap = {};
+            bbmData.forEach(item => {
+                if (!dailyTotalsMap[item.tanggal]) dailyTotalsMap[item.tanggal] = 0;
+                dailyTotalsMap[item.tanggal] += item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+            });
+
+            let daysSum = Array(7).fill(0);
+            let daysCount = Array(7).fill(0);
+            Object.keys(dailyTotalsMap).forEach(tglStr => {
+                const d = new Date(tglStr).getDay();
+                daysSum[d] += dailyTotalsMap[tglStr];
+                daysCount[d]++;
+            });
+
+            const finalWeeklyPattern = [1, 2, 3, 4, 5, 6, 0].map(idx => {
+                const count = daysCount[idx];
+                const rSum = daysSum[idx];
+                return {
+                    "Hari": hariIndo[idx],
+                    "Jumlah Pengamatan (Hari)": count,
+                    "Total Volume Disalurkan (KL)": parseFloat(rSum.toFixed(2)),
+                    "Rerata Penyaluran Harian (KL)": count > 0 ? parseFloat((rSum / count).toFixed(2)) : 0
+                };
+            });
+
+            const wsMingguan = XLSX.utils.json_to_sheet(finalWeeklyPattern);
+            XLSX.utils.book_append_sheet(wb, wsMingguan, "Analisis Hari Terpadat");
+
+            // DOWNLOAD WORKBOOK
+            XLSX.writeFile(wb, "REKAP_BBM_SHIFT_IT_GORONTALO.xlsx");
+            showNotification("Berkas Excel berhasil diekspor dengan struktur tabel yang mudah dibaca!");
+        }
+    </script>
+</body>
+</html>

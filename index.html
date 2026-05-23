@@ -843,7 +843,7 @@
                 console.error("Kesalahan Supabase:", err);
                 const errorLog = document.getElementById('db-modal-error');
                 if (errorLog) {
-                    errorLog.innerText = `Kesalahan: ${err.message}.\n\nTips: Pastikan kolom baru 'plan_x' & 'cancel_x' telah Anda tambahkan ke tabel Supabase menggunakan perintah ALTER TABLE di SQL Editor.`;
+                    errorLog.innerText = `Kesalahan: ${err.message}.\n\nTips: Pastikan URL tidak mengandung '/rest/v1/' di inputan Anda. Dan pastikan fitur Row Level Security (RLS) di Supabase SQL Editor Anda sudah dinonaktifkan.`;
                     errorLog.classList.remove('hidden');
                 }
                 updateStatusBadge('local');
@@ -1195,7 +1195,7 @@
             return `${hariIndo[d.getDay()]}, ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // 🌟 VISUALISASI PROYEKSI & TARGET PENYALURAN ESOK / CARI TANGGAL 🌟
+        // 🌟 INTEGRASI MAKSIMAL: VISUALISASI PROYEKSI & TARGET PENYALURAN SENSITIF SHIFT AKTIF 🌟
         function renderTargetPlanWidget() {
             const dateInput = document.getElementById('target-plan-date');
             if (!dateInput.value) {
@@ -1205,9 +1205,15 @@
             }
             
             const selectedDate = dateInput.value;
+            const activeShiftFilter = document.getElementById('filter-shift').value;
             
             // Saring semua record yang berada pada tanggal terpilih ini
-            const dayRecords = bbmData.filter(item => item.tanggal === selectedDate);
+            let dayRecords = bbmData.filter(item => item.tanggal === selectedDate);
+            
+            // SENSITIF FILTER SHIFT: Saring berdasarkan filter shift global jika terpilih
+            if (activeShiftFilter !== 'Semua Shift') {
+                dayRecords = dayRecords.filter(item => item.shift === activeShiftFilter);
+            }
             
             let planSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
             let realSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
@@ -1225,8 +1231,9 @@
             const totalPlan = Object.values(planSums).reduce((a, b) => a + b, 0);
             const totalReal = Object.values(realSums).reduce((a, b) => a + b, 0);
             
-            // Tulis ringkasan data di widget
-            setText('target-plan-date-display', formatDateIndo(selectedDate));
+            // Tulis ringkasan data di widget dengan keterangan Shift aktif
+            const shiftText = activeShiftFilter === 'Semua Shift' ? 'Gabungan Shift I & II' : activeShiftFilter;
+            setText('target-plan-date-display', `${formatDateIndo(selectedDate)} (${shiftText})`);
             setText('target-plan-total', totalPlan.toFixed(2) + " KL");
             setText('target-real-total', totalReal.toFixed(2) + " KL");
             
@@ -1306,6 +1313,20 @@
                 }
             });
             lucide.createIcons();
+        }
+
+        // FUNGSI UNTUK MENGGANTI CAKUPAN GRAFIK (DAILY, MONTHLY, QUARTERLY)
+        function switchChartScope(scope) {
+            currentChartScope = scope;
+            ['daily', 'monthly', 'quarterly'].forEach(sc => {
+                const btn = document.getElementById(`btn-scope-${sc}`);
+                if (btn) {
+                    btn.className = (sc === scope)
+                        ? "px-3 py-1.5 rounded-md font-medium transition bg-blue-600 text-white"
+                        : "px-3 py-1.5 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
+                }
+            });
+            renderMainDistributionChart();
         }
 
         // KALKULASI KPI UTAMA DENGAN INTEGRASI PLAN & CANCEL
@@ -1927,7 +1948,7 @@
             // Set Warning Text Dinamis
             document.getElementById('dynamic-warning-text').innerHTML = `
                 Sistem mendeteksi bahwa hari <strong>${hariIndo[busyDayIdx].toUpperCase()}</strong> secara konsisten memiliki beban muat tertinggi. 
-                <br/><span class="text-white font-semibold">ANALISIS RISIKO:</span> Jika tingkat pembatalan (*cancel rate*) berada di atas 10%, lakukan penyesuaian pemesanan stok timbun satu hari sebelum hari ${hariIndo[busyDayIdx]} (yaitu hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]}) guna menghindari *dead-stock* atau pengendapan modal berlebih di SPBU tujuan IT Gorontalo.
+                <br/><span class="text-white font-semibold">ANALISIS RISIKO:</span> Jika tingkat pembatalan (*cancel rate*) berada di atas 10%, lakukan penyesuaian pemesanan stok timbun satu hari sebelum hari ${hariIndo[busyDayIdx]} (yaitu hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]}) guna menghindari *dead-stock* or pengendapan modal berlebih di SPBU tujuan IT Gorontalo.
             `;
         }
 

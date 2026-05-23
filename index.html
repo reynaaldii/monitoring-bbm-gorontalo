@@ -117,6 +117,18 @@
                         </div>
                     </div>
 
+                    <!-- SEGMEN PENERIMA DROPDOWN (UPDATED TO 5 SEGMEN) -->
+                    <div>
+                        <label class="block text-[10px] text-brand-textSecondary mb-1 font-semibold">Segmen Penerima (Customer)</label>
+                        <select id="input-segmen" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <option value="RETAIL">RETAIL (Lembaga Penyalur)</option>
+                            <option value="INDUSTRI">INDUSTRI</option>
+                            <option value="TNI">TNI</option>
+                            <option value="POLRI">POLRI</option>
+                            <option value="RAE">RAE (Reguler Alternatif Emergency)</option>
+                        </select>
+                    </div>
+
                     <!-- PRODUK INPUT GRID (PLAN VS CANCEL) -->
                     <div class="space-y-3">
                         <span class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider block border-b border-brand-border/60 pb-1">Detail Rencana & Deviasi (KL)</span>
@@ -329,6 +341,19 @@
                         </select>
                     </div>
 
+                    <!-- Filter Segmen (UPDATED TO 5 SEGMEN) -->
+                    <div class="flex flex-col">
+                        <label class="text-[10px] text-brand-textSecondary mb-1 font-semibold">SEGMEN</label>
+                        <select id="filter-segmen" onchange="renderDashboard()" class="bg-slate-900 border border-brand-border rounded-lg text-xs px-3 py-2 text-white focus:outline-none">
+                            <option value="Semua Segmen">Semua Segmen</option>
+                            <option value="RETAIL">RETAIL</option>
+                            <option value="INDUSTRI">INDUSTRI</option>
+                            <option value="TNI">TNI</option>
+                            <option value="POLRI">POLRI</option>
+                            <option value="RAE">RAE</option>
+                        </select>
+                    </div>
+
                     <!-- Filter Produk BBM -->
                     <div class="flex flex-col">
                         <label class="text-[10px] text-brand-textSecondary mb-1 font-semibold">PRODUK BBM</label>
@@ -368,9 +393,9 @@
                 </div>
             </div>
 
-            <!-- DUA KOLOM ANALISIS: SHARE PRODUK DAN ANALISIS HARI CROWDED -->
+            <!-- TIGA KOLOM ANALISIS: SHARE PRODUK, SHARE CUSTOMER, DAN RERATA BEBAN MINGGUAN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Share Produk (Pie/Donut) -->
+                <!-- 1. Share Produk (Doughnut) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1" id="share-chart-title">
@@ -386,20 +411,50 @@
                     </div>
                 </div>
 
-                <!-- Tren Hari Crowded (Bar Chart) -->
-                <div class="lg:col-span-8 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+                <!-- 2. Share Segmen Pelanggan (Polar area chart - 5 SEGMEN) -->
+                <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1" id="weekly-chart-title">
-                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-amber-500"></i> Rerata Beban Distribusi Mingguan
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                            <i data-lucide="users" class="w-5 h-5 text-indigo-400"></i> Distribusi Segmen Pelanggan
                         </h3>
-                        <p class="text-xs text-brand-textSecondary mb-4">Mengidentifikasi pola kepadatan aktivitas mingguan armada tangki</p>
+                        <p class="text-xs text-brand-textSecondary mb-4">Volume penyaluran realisasi berdasarkan kategori konsumen</p>
                     </div>
-                    <div class="relative h-64 w-full">
+                    <div class="relative h-64 w-full flex items-center justify-center">
+                        <canvas id="customerSegmentChart"></canvas>
+                    </div>
+                    <div class="mt-4 space-y-1 text-xs overflow-y-auto max-h-48" id="share-segment-legend">
+                        <!-- Legend Diisi Dinamis Via JS -->
+                    </div>
+                </div>
+
+                <!-- 3. Rerata Beban Distribusi Mingguan (Grouped Bar Chart - Plan vs Realisasi) + FILTER RENTANG TANGGAL -->
+                <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-1">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2" id="weekly-chart-title">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-amber-500"></i> Rerata Beban Distribusi
+                            </h3>
+                        </div>
+                        <p class="text-[11px] text-brand-textSecondary mb-3">Perbandingan Rencana (Plan) vs Aktual (Realisasi) harian</p>
+                        
+                        <!-- NEW: Input Filter Rentang Tanggal Mingguan -->
+                        <div class="grid grid-cols-2 gap-2 mb-3 bg-slate-900/60 p-2 rounded-xl border border-brand-border/40">
+                            <div>
+                                <label class="block text-[8px] text-brand-textSecondary font-extrabold mb-0.5 uppercase tracking-wider">Mulai:</label>
+                                <input type="date" id="weekly-start-date" onchange="renderWeeklyPatternChart()" class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-amber-500 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-[8px] text-brand-textSecondary font-extrabold mb-0.5 uppercase tracking-wider">Selesai:</label>
+                                <input type="date" id="weekly-end-date" onchange="renderWeeklyPatternChart()" class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-amber-500 cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-56 w-full">
                         <canvas id="weeklyPatternChart"></canvas>
                     </div>
-                    <div class="mt-4 bg-slate-900/50 p-3 rounded-xl border border-brand-border text-xs text-brand-textSecondary flex items-center gap-2">
+                    <div class="mt-3 bg-slate-900/50 p-2.5 rounded-xl border border-brand-border text-[10px] text-brand-textSecondary flex items-center gap-2">
                         <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0"></i>
-                        <span>Pola mingguan membantu Tim Distribusi mengantisipasi antrean armada tangki pada hari dengan volume muatan kritis.</span>
+                        <span>Pola mingguan komparatif membantu tim distribusi mengevaluasi akurasi perencanaan dibanding realisasi aktual.</span>
                     </div>
                 </div>
             </div>
@@ -568,6 +623,7 @@
                             <tr class="border-b border-brand-border bg-slate-900 text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider">
                                 <th class="py-3 px-3">Hari / Tanggal</th>
                                 <th class="py-3 px-3">Shift</th>
+                                <th class="py-3 px-3">Segmen</th>
                                 <th class="py-3 px-3 text-right">BIOSOLARB40 (KL)</th>
                                 <th class="py-3 px-3 text-right">PERTALITE (KL)</th>
                                 <th class="py-3 px-3 text-right">PERTAMAX (KL)</th>
@@ -655,16 +711,16 @@
 
     <!-- SCRIPT UTAMA KONTROL DATA, GRAFIK & DIAGNOSTIK SUPABASE -->
     <script>
-        // MOCK DATA AWAL (DENGAN TAMBAHAN KOLOM PLAN VS CANCEL UNTUK SIMULASI)
+        // MOCK DATA AWAL (SINKRON DENGAN 5 SEGMEN)
         const MOCK_DATA = [
-            { id: "1", tanggal: "2026-04-01", shift: "Shift I", biosolar: 52.40, pertalite: 110.50, pertamax: 35.20, dexlite: 12.50, pertadex: 8.40, plan_biosolar: 55.40, cancel_biosolar: 3.00, plan_pertalite: 115.50, cancel_pertalite: 5.00, plan_pertamax: 37.20, cancel_pertamax: 2.00, plan_dexlite: 12.50, cancel_dexlite: 0.00, plan_pertadex: 9.00, cancel_pertadex: 0.60 },
-            { id: "2", tanggal: "2026-04-01", shift: "Shift II", biosolar: 48.90, pertalite: 115.20, pertamax: 31.80, dexlite: 14.20, pertadex: 7.90, plan_biosolar: 50.00, cancel_biosolar: 1.10, plan_pertalite: 120.20, cancel_pertalite: 5.00, plan_pertamax: 31.80, cancel_pertamax: 0.00, plan_dexlite: 15.00, cancel_dexlite: 0.80, plan_pertadex: 8.00, cancel_pertadex: 0.10 },
-            { id: "3", tanggal: "2026-04-02", shift: "Shift I", biosolar: 55.10, pertalite: 128.00, pertamax: 38.60, dexlite: 15.10, pertadex: 9.10, plan_biosolar: 60.10, cancel_biosolar: 5.00, plan_pertalite: 138.00, cancel_pertalite: 10.00, plan_pertamax: 40.00, cancel_pertamax: 1.40, plan_dexlite: 16.00, cancel_dexlite: 0.90, plan_pertadex: 10.00, cancel_pertadex: 0.90 },
-            { id: "4", tanggal: "2026-04-02", shift: "Shift II", biosolar: 61.20, pertalite: 142.10, pertamax: 45.00, dexlite: 18.40, pertadex: 11.20, plan_biosolar: 70.00, cancel_biosolar: 8.80, plan_pertalite: 152.10, cancel_pertalite: 10.00, plan_pertamax: 45.00, cancel_pertamax: 0.00, plan_dexlite: 20.00, cancel_dexlite: 1.60, plan_pertadex: 12.00, cancel_pertadex: 0.80 },
-            { id: "5", tanggal: "2026-04-03", shift: "Shift I", biosolar: 32.50, pertalite: 95.00,  pertamax: 22.10, dexlite: 8.90,  pertadex: 5.40, plan_biosolar: 32.50, cancel_biosolar: 0.00, plan_pertalite: 95.00, cancel_pertalite: 0.00, plan_pertamax: 25.10, cancel_pertamax: 3.00, plan_dexlite: 8.90, cancel_dexlite: 0.00, plan_pertadex: 6.00, cancel_pertadex: 0.60 },
-            { id: "6", tanggal: "2026-04-03", shift: "Shift II", biosolar: 50.80, pertalite: 108.40, pertamax: 32.00, dexlite: 11.80, pertadex: 8.00, plan_biosolar: 52.80, cancel_biosolar: 2.00, plan_pertalite: 112.40, cancel_pertalite: 4.00, plan_pertamax: 32.00, cancel_pertamax: 0.00, plan_dexlite: 11.80, cancel_dexlite: 0.00, plan_pertadex: 8.00, cancel_pertadex: 0.00 },
-            { id: "7", tanggal: "2026-04-04", shift: "Shift I", biosolar: 47.60, pertalite: 112.90, pertamax: 29.50, dexlite: 12.40, pertadex: 7.60, plan_biosolar: 50.00, cancel_biosolar: 2.40, plan_pertalite: 120.00, cancel_pertalite: 7.10, plan_pertamax: 32.00, cancel_pertamax: 2.50, plan_dexlite: 13.00, cancel_dexlite: 0.60, plan_pertadex: 8.00, cancel_pertadex: 0.40 },
-            { id: "8", tanggal: "2026-04-04", shift: "Shift II", biosolar: 49.30, pertalite: 114.10, pertamax: 33.40, dexlite: 13.00, pertadex: 8.20, plan_biosolar: 51.30, cancel_biosolar: 2.00, plan_pertalite: 119.10, cancel_pertalite: 5.00, plan_pertamax: 33.40, cancel_pertamax: 0.00, plan_dexlite: 13.00, cancel_dexlite: 0.00, plan_pertadex: 8.50, cancel_pertadex: 0.30 }
+            { id: "1", tanggal: "2026-04-01", shift: "Shift I", segmen: "RETAIL", biosolar: 52.40, pertalite: 110.50, pertamax: 35.20, dexlite: 12.50, pertadex: 8.40, plan_biosolar: 55.40, cancel_biosolar: 3.00, plan_pertalite: 115.50, cancel_pertalite: 5.00, plan_pertamax: 37.20, cancel_pertamax: 2.00, plan_dexlite: 12.50, cancel_dexlite: 0.00, plan_pertadex: 9.00, cancel_pertadex: 0.60 },
+            { id: "2", tanggal: "2026-04-01", shift: "Shift II", segmen: "INDUSTRI", biosolar: 48.90, pertalite: 115.20, pertamax: 31.80, dexlite: 14.20, pertadex: 7.90, plan_biosolar: 50.00, cancel_biosolar: 1.10, plan_pertalite: 120.20, cancel_pertalite: 5.00, plan_pertamax: 31.80, cancel_pertamax: 0.00, plan_dexlite: 15.00, cancel_dexlite: 0.80, plan_pertadex: 8.00, cancel_pertadex: 0.10 },
+            { id: "3", tanggal: "2026-04-02", shift: "Shift I", segmen: "TNI", biosolar: 55.10, pertalite: 128.00, pertamax: 38.60, dexlite: 15.10, pertadex: 9.10, plan_biosolar: 60.10, cancel_biosolar: 5.00, plan_pertalite: 138.00, cancel_pertalite: 10.00, plan_pertamax: 40.00, cancel_pertamax: 1.40, plan_dexlite: 16.00, cancel_dexlite: 0.90, plan_pertadex: 10.00, cancel_pertadex: 0.90 },
+            { id: "4", tanggal: "2026-04-02", shift: "Shift II", segmen: "POLRI", biosolar: 61.20, pertalite: 142.10, pertamax: 45.00, dexlite: 18.40, pertadex: 11.20, plan_biosolar: 70.00, cancel_biosolar: 8.80, plan_pertalite: 152.10, cancel_pertalite: 10.00, plan_pertamax: 45.00, cancel_pertamax: 0.00, plan_dexlite: 20.00, cancel_dexlite: 1.60, plan_pertadex: 12.00, cancel_pertadex: 0.80 },
+            { id: "5", tanggal: "2026-04-03", shift: "Shift I", segmen: "RAE", biosolar: 32.50, pertalite: 95.00,  pertamax: 22.10, dexlite: 8.90,  pertadex: 5.40, plan_biosolar: 32.50, cancel_biosolar: 0.00, plan_pertalite: 95.00, cancel_pertalite: 0.00, plan_pertamax: 25.10, cancel_pertamax: 3.00, plan_dexlite: 8.90, cancel_dexlite: 0.00, plan_pertadex: 6.00, cancel_pertadex: 0.60 },
+            { id: "6", tanggal: "2026-04-03", shift: "Shift II", segmen: "RAE", biosolar: 50.80, pertalite: 108.40, pertamax: 32.00, dexlite: 11.80, pertadex: 8.00, plan_biosolar: 52.80, cancel_biosolar: 2.00, plan_pertalite: 112.40, cancel_pertalite: 4.00, plan_pertamax: 32.00, cancel_pertamax: 0.00, plan_dexlite: 11.80, cancel_dexlite: 0.00, plan_pertadex: 8.00, cancel_pertadex: 0.00 },
+            { id: "7", tanggal: "2026-04-04", shift: "Shift I", segmen: "RETAIL", biosolar: 47.60, pertalite: 112.90, pertamax: 29.50, dexlite: 12.40, pertadex: 7.60, plan_biosolar: 50.00, cancel_biosolar: 2.40, plan_pertalite: 120.00, cancel_pertalite: 7.10, plan_pertamax: 32.00, cancel_pertamax: 2.50, plan_dexlite: 13.00, cancel_dexlite: 0.60, plan_pertadex: 8.00, cancel_pertadex: 0.40 },
+            { id: "8", tanggal: "2026-04-04", shift: "Shift II", segmen: "INDUSTRI", biosolar: 49.30, pertalite: 114.10, pertamax: 33.40, dexlite: 13.00, pertadex: 8.20, plan_biosolar: 51.30, cancel_biosolar: 2.00, plan_pertalite: 119.10, cancel_pertalite: 5.00, plan_pertamax: 33.40, cancel_pertamax: 0.00, plan_dexlite: 13.00, cancel_dexlite: 0.00, plan_pertadex: 8.50, cancel_pertadex: 0.30 }
         ];
 
         // KONFIGURASI SUPABASE (DIBACA DARI LOCAL STORAGE JIKA SUDAH DISIMPAN)
@@ -675,10 +731,13 @@
 
         let bbmData = [];
         let currentChartScope = 'daily';
+        
+        // INSTANSI GRAFIK-GRAFIK UTAMA
         let mainChart = null;
         let productShareChart = null;
+        let customerSegmentChart = null; 
         let weeklyPatternChart = null;
-        let targetPlanChart = null; // Instansi grafik proyeksi harian esok baru
+        let targetPlanChart = null; 
 
         const productsConfig = {
             biosolar: { label: 'BIOSOLARB40', color: '#10b981' },
@@ -686,6 +745,15 @@
             pertamax: { label: 'PERTAMAX', color: '#3b82f6' },
             dexlite: { label: 'DEXLITE', color: '#f97316' },
             pertadex: { label: 'PERTADEX', color: '#ef4444' }
+        };
+
+        // 5 SEGMEN PELANGGAN BARU (BUMN DIHAPUS)
+        const segmentsConfig = {
+            RETAIL: { label: 'RETAIL (Lembaga Penyalur)', color: '#3b82f6' }, 
+            INDUSTRI: { label: 'INDUSTRI', color: '#a855f7' },   
+            TNI: { label: 'TNI', color: '#15803d' },             
+            POLRI: { label: 'POLRI', color: '#64748b' },         
+            RAE: { label: 'RAE (Reguler Alternatif Emergency)', color: '#f97316' } 
         };
 
         const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -988,6 +1056,7 @@
             const editId = document.getElementById('edit-id').value;
             const tanggal = document.getElementById('input-date').value;
             const shift = document.getElementById('input-shift').value;
+            const segmen = document.getElementById('input-segmen').value; // Ambil nilai segmen baru
 
             // Baca Plan & Cancel, kalkulasikan Realisasi secara aman
             const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
@@ -1007,6 +1076,7 @@
                 id: editId || Date.now().toString(),
                 tanggal,
                 shift,
+                segmen, // Daftarkan segmen baru
                 // Realisasi (Lama/Inti)
                 biosolar: Math.max(0, plan_biosolar - cancel_biosolar),
                 pertalite: Math.max(0, plan_pertalite - cancel_pertalite),
@@ -1086,6 +1156,7 @@
             document.getElementById('edit-id').value = item.id;
             document.getElementById('input-date').value = item.tanggal;
             document.getElementById('input-shift').value = item.shift;
+            document.getElementById('input-segmen').value = item.segmen || 'RETAIL'; // Restore segmen
 
             // Isi nilai Plan & Cancel, jika data lama tidak ada Plan maka samakan dengan realisasi
             Object.keys(productsConfig).forEach(pKey => {
@@ -1114,6 +1185,7 @@
         function resetFormState() {
             document.getElementById('form-penyaluran').reset();
             document.getElementById('edit-id').value = "";
+            document.getElementById('input-segmen').value = "RETAIL"; // Reset segmen
 
             document.getElementById('form-title').classList.remove('text-blue-500');
             document.getElementById('form-title').classList.add('text-emerald-500');
@@ -1131,52 +1203,19 @@
             lucide.createIcons();
         }
 
-        function triggerDelete(id) {
-            openConfirmModal("Hapus Log Penyaluran", "Yakin ingin menghapus baris penyaluran ini? Data yang terhapus tidak dapat dikembalikan.", async () => {
-                if (supabaseConfig.url && supabaseConfig.key) {
-                    try {
-                        const response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'apikey': supabaseConfig.key,
-                                'Authorization': `Bearer ${supabaseConfig.key}`
-                            }
-                        });
-                        if (response.ok) {
-                            await loadDataFromSupabase();
-                            showNotification("Transaksi cloud berhasil dihapus!");
-                        }
-                    } catch (err) {
-                        showNotification("Gagal menghapus data dari cloud.", "error");
-                    }
-                } else {
-                    bbmData = bbmData.filter(d => d.id !== id);
-                    localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
-                    renderDashboard();
-                    showNotification("Satu log transaksi lokal terhapus.", "warning");
-                }
-            });
-        }
-
-        // AGREGASI DAN PENYARINGAN DATA AKTIF
+        // AGREGASI DAN PENYARINGAN DATA AKTIF (SINKRON SEGMEN BARU - 5 SEGMEN)
         function getFilteredData() {
             const shiftFilter = document.getElementById('filter-shift').value;
+            const segmenFilter = document.getElementById('filter-segmen').value; // Baca filter segmen
             let data = [...bbmData];
 
             if (shiftFilter !== 'Semua Shift') {
                 data = data.filter(item => item.shift === shiftFilter);
             }
+            if (segmenFilter !== 'Semua Segmen') {
+                data = data.filter(item => (item.segmen || 'RETAIL') === segmenFilter);
+            }
             return data.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-        }
-
-        function renderDashboard() {
-            renderTable();
-            calculateKPIs();
-            renderMainDistributionChart();
-            renderProductShareChart();
-            renderWeeklyPatternChart();
-            renderTargetPlanWidget(); // Render proyeksi target harian esok baru
-            gener3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
         }
 
         // FUNGSI PEMBANTU UNTUK MENGATUR TEKS ELEMEN SECARA AMAN (Mencegah crash jika elemen HTML tidak ada)
@@ -1192,10 +1231,10 @@
             if (!dateStr) return '';
             const d = new Date(dateStr);
             if (isNaN(d)) return dateStr;
-            return `${hariIndo[d.getDay()]}, ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
+            return `${hariIndo[d.getDay()]} , ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // 🌟 INTEGRASI MAKSIMAL: VISUALISASI PROYEKSI & TARGET PENYALURAN SENSITIF SHIFT AKTIF 🌟
+        // 🌟 INTEGRASI MAKSIMAL: VISUALISASI PROYEKSI & TARGET PENYALURAN SENSITIF SHIFT & SEGMEN AKTIF 🌟
         function renderTargetPlanWidget() {
             const dateInput = document.getElementById('target-plan-date');
             if (!dateInput.value) {
@@ -1206,13 +1245,17 @@
             
             const selectedDate = dateInput.value;
             const activeShiftFilter = document.getElementById('filter-shift').value;
+            const activeSegmenFilter = document.getElementById('filter-segmen').value; // Integrasi Segmen
             
             // Saring semua record yang berada pada tanggal terpilih ini
             let dayRecords = bbmData.filter(item => item.tanggal === selectedDate);
             
-            // SENSITIF FILTER SHIFT: Saring berdasarkan filter shift global jika terpilih
+            // SENSITIF FILTER SHIFT & SEGMEN GLOBAL
             if (activeShiftFilter !== 'Semua Shift') {
                 dayRecords = dayRecords.filter(item => item.shift === activeShiftFilter);
+            }
+            if (activeSegmenFilter !== 'Semua Segmen') {
+                dayRecords = dayRecords.filter(item => (item.segmen || 'RETAIL') === activeSegmenFilter);
             }
             
             let planSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
@@ -1231,9 +1274,10 @@
             const totalPlan = Object.values(planSums).reduce((a, b) => a + b, 0);
             const totalReal = Object.values(realSums).reduce((a, b) => a + b, 0);
             
-            // Tulis ringkasan data di widget dengan keterangan Shift aktif
-            const shiftText = activeShiftFilter === 'Semua Shift' ? 'Gabungan Shift I & II' : activeShiftFilter;
-            setText('target-plan-date-display', `${formatDateIndo(selectedDate)} (${shiftText})`);
+            // Tulis ringkasan data di widget dengan keterangan Shift & Segmen aktif
+            const shiftText = activeShiftFilter === 'Semua Shift' ? 'Semua Shift' : activeShiftFilter;
+            const segText = activeSegmenFilter === 'Semua Segmen' ? 'Semua Segmen' : activeSegmenFilter;
+            setText('target-plan-date-display', `${formatDateIndo(selectedDate)} | ${shiftText} | ${segText}`);
             setText('target-plan-total', totalPlan.toFixed(2) + " KL");
             setText('target-real-total', totalReal.toFixed(2) + " KL");
             
@@ -1329,7 +1373,7 @@
             renderMainDistributionChart();
         }
 
-        // KALKULASI KPI UTAMA DENGAN INTEGRASI PLAN & CANCEL
+        // KALKULASI KPI UTAMA DENGAN INTEGRASI PLAN, CANCEL, DAN SEGMEN
         function calculateKPIs() {
             const filteredData = getFilteredData();
             const productFilter = document.getElementById('filter-product').value;
@@ -1420,7 +1464,7 @@
             let labels = [];
             let datasets = [];
 
-            // A. JIKA FILTER "SEMUA PRODUK": Tampilkan Tren Realisasi dari Kelima Produk (Rapi & Tidak Penuh)
+            // A. JIKA FILTER "SEMUA PRODUK": Tampilkan Tren Realisasi dari Kelima Produk
             if (productFilter === 'Semua Produk') {
                 document.getElementById('main-chart-title').innerHTML = `<i data-lucide="line-chart" class="w-5 h-5 text-blue-500 inline-block align-text-bottom mr-1"></i> Tren Penyaluran Realisasi BBM`;
                 document.getElementById('main-chart-desc').innerText = "Menampilkan volume realisasi (Plan dikurangi Cancel) untuk seluruh produk BBM";
@@ -1678,9 +1722,9 @@
                         <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border-brand-border/40">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full" style="background-color: ${conf.color};"></span>
-                                <span class="font-medium text-white">${conf.label}</span>
+                                <span class="font-medium text-white text-[11px]">${conf.label}</span>
                             </div>
-                            <div class="font-mono text-[11px]">
+                            <div class="font-mono text-[10px]">
                                 <span class="text-brand-textSecondary mr-2">${totals[pKey].toFixed(1)} KL</span>
                                 <span class="text-emerald-400 font-semibold">${pct}%</span>
                             </div>
@@ -1726,9 +1770,9 @@
                         <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border-brand-border/40">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full" style="background-color: ${colors[idx]};"></span>
-                                <span class="font-medium text-white">${label}</span>
+                                <span class="font-medium text-white text-[11px]">${label}</span>
                             </div>
-                            <div class="font-mono text-[11px]">
+                            <div class="font-mono text-[10px]">
                                 <span class="text-brand-textSecondary mr-2">${rawData[idx].toFixed(1)} KL</span>
                                 <span class="text-white font-semibold" style="color: ${colors[idx]}">${pct}%</span>
                             </div>
@@ -1739,7 +1783,97 @@
             lucide.createIcons();
         }
 
-        // BAR CHART: BEBAN MINGGUAN (SINKRON SENSITIF PRODUK)
+        // 🌟 WIDGET GRAFIK BARU: POLAR AREA KOMPOSISI SEGMEN PELANGGAN (5 SEGMEN) 🌟
+        function renderCustomerSegmentChart() {
+            const ctx = document.getElementById('customerSegmentChart').getContext('2d');
+            if (customerSegmentChart) customerSegmentChart.destroy();
+
+            const filteredData = getFilteredData();
+            const productFilter = document.getElementById('filter-product').value;
+            const legendContainer = document.getElementById('share-segment-legend');
+            legendContainer.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                customerSegmentChart = new Chart(ctx, { type: 'polarArea', data: { datasets: [] } });
+                return;
+            }
+
+            // Agregasi volume realisasi per segmen pelanggan
+            let segmentSums = { RETAIL: 0, INDUSTRI: 0, TNI: 0, POLRI: 0, RAE: 0 };
+            let grandTotal = 0;
+
+            filteredData.forEach(item => {
+                const seg = item.segmen || 'RETAIL';
+                let itemTotal = 0;
+                
+                if (productFilter === 'Semua Produk') {
+                    Object.keys(productsConfig).forEach(pKey => {
+                        itemTotal += item[pKey] || 0;
+                    });
+                } else {
+                    itemTotal = item[productFilter] || 0;
+                }
+                
+                if (segmentSums[seg] !== undefined) {
+                    segmentSums[seg] += itemTotal;
+                    grandTotal += itemTotal;
+                }
+            });
+
+            const labels = Object.keys(segmentsConfig).map(k => segmentsConfig[k].label);
+            const colors = Object.keys(segmentsConfig).map(k => segmentsConfig[k].color);
+            const rawData = Object.keys(segmentsConfig).map(k => segmentSums[k]);
+
+            customerSegmentChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: rawData,
+                        backgroundColor: colors.map(c => c + 'aa'), // Semi-transparan agar efek polar-area terlihat premium
+                        borderColor: '#1e293b',
+                        borderWidth: 1.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        r: {
+                            grid: { color: '#334155' },
+                            ticks: { display: false },
+                            angleLines: { color: '#334155' }
+                        }
+                    }
+                }
+            });
+
+            // Tulis Legenda Dinamis per Segmen Pelanggan (5 SEGMEN)
+            Object.keys(segmentsConfig).forEach(sKey => {
+                const conf = segmentsConfig[sKey];
+                const vol = segmentSums[sKey];
+                const pct = grandTotal > 0 ? ((vol / grandTotal) * 100).toFixed(1) : "0.0";
+                
+                legendContainer.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-900/40 px-3 py-1.5 rounded-lg border border-brand-border/40">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${conf.color};"></span>
+                            <span class="font-medium text-white text-[11px]">${conf.label}</span>
+                        </div>
+                        <div class="font-mono text-[10px]">
+                            <span class="text-brand-textSecondary mr-2">${vol.toFixed(1)} KL</span>
+                            <span class="text-indigo-400 font-bold">${pct}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // BAR CHART: KOMPARATIF BEBAN MINGGUAN (SINKRON DENGAN PLAN VS REALISASI + FILTER RENTANG TANGGAL KHUSUS)
         function renderWeeklyPatternChart() {
             const ctx = document.getElementById('weeklyPatternChart').getContext('2d');
             if (weeklyPatternChart) weeklyPatternChart.destroy();
@@ -1747,60 +1881,104 @@
             const filteredData = getFilteredData();
             const productFilter = document.getElementById('filter-product').value;
 
-            if (filteredData.length === 0) {
+            // Ambil filter rentang tanggal khusus untuk grafik mingguan
+            const startDateVal = document.getElementById('weekly-start-date').value;
+            const endDateVal = document.getElementById('weekly-end-date').value;
+
+            let chartData = [...filteredData];
+
+            // Filter rentang tanggal jika diisi oleh pengguna
+            if (startDateVal) {
+                chartData = chartData.filter(item => item.tanggal >= startDateVal);
+            }
+            if (endDateVal) {
+                chartData = chartData.filter(item => item.tanggal <= endDateVal);
+            }
+
+            if (chartData.length === 0) {
                 weeklyPatternChart = new Chart(ctx, { type: 'bar', data: { datasets: [] } });
                 return;
             }
 
-            let sums = Array(7).fill(0);
+            // Agregasi Plan dan Realisasi per hari dalam seminggu
+            let planSums = Array(7).fill(0);
+            let realSums = Array(7).fill(0);
             let counts = Array(7).fill(0);
 
-            filteredData.forEach(item => {
+            chartData.forEach(item => {
                 const dayIndex = new Date(item.tanggal).getDay();
-                let vol = 0;
+                let volPlan = 0;
+                let volReal = 0;
+                
                 if (productFilter === 'Semua Produk') {
-                    vol = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                    Object.keys(productsConfig).forEach(pKey => {
+                        const real = item[pKey] || 0;
+                        const plan = item[`plan_${pKey}`] !== undefined ? item[`plan_${pKey}`] : real;
+                        volReal += real;
+                        volPlan += plan;
+                    });
                 } else {
-                    vol = item[productFilter] || 0;
+                    volReal = item[productFilter] || 0;
+                    volPlan = item[`plan_${productFilter}`] !== undefined ? item[`plan_${productFilter}`] : volReal;
                 }
-                sums[dayIndex] += vol;
+                
+                planSums[dayIndex] += volPlan;
+                realSums[dayIndex] += volReal;
                 counts[dayIndex]++;
             });
 
-            const avgData = sums.map((s, idx) => counts[idx] > 0 ? (s / counts[idx]) : 0);
+            const avgPlanData = planSums.map((s, idx) => counts[idx] > 0 ? (s / counts[idx]) : 0);
+            const avgRealData = realSums.map((s, idx) => counts[idx] > 0 ? (s / counts[idx]) : 0);
 
             const orderedLabels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
-            const orderedIndices = [1, 2, 3, 4, 5, 6, 0];
-            const finalChartData = orderedIndices.map(idx => avgData[idx]);
-
-            const maxVal = Math.max(...finalChartData);
-            const backgroundColors = finalChartData.map(v => (v === maxVal && v > 0) ? '#f59e0b' : '#475569');
+            const orderedIndices = [1, 2, 3, 4, 5, 6, 0]; // Urut dari Senin s/d Minggu
+            
+            const finalPlanChartData = orderedIndices.map(idx => avgPlanData[idx]);
+            const finalRealChartData = orderedIndices.map(idx => avgRealData[idx]);
 
             weeklyPatternChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: orderedLabels,
-                    datasets: [{
-                        label: 'Rerata Penyaluran (KL)',
-                        data: finalChartData,
-                        backgroundColor: backgroundColors,
-                        borderRadius: 6,
-                        maxBarThickness: 45
-                    }]
+                    datasets: [
+                        {
+                            label: 'Rerata Rencana (Plan)',
+                            data: finalPlanChartData,
+                            backgroundColor: '#3b82f6aa', // Indigo
+                            borderColor: '#3b82f6',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            maxBarThickness: 15
+                        },
+                        {
+                            label: 'Rerata Realisasi (Aktual)',
+                            data: finalRealChartData,
+                            backgroundColor: '#10b981aa', // Green
+                            borderColor: '#10b981',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            maxBarThickness: 15
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: '#94a3b8', font: { size: 9 } }
+                        }
+                    },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } }
                     }
                 }
             });
         }
 
-        // TABEL LOG TRANSAKSI INTEGRAL (MENAMPILKAN NILAI REALISASI)
+        // TABEL LOG TRANSAKSI INTEGRAL (MENAMPILKAN NILAI REALISASI DAN BADGE SEGMEN)
         function renderTable() {
             const tbody = document.getElementById('table-body-penyaluran');
             const searchVal = document.getElementById('search-data').value.toLowerCase();
@@ -1809,13 +1987,22 @@
             const filtered = bbmData.filter(item => item.tanggal.toLowerCase().includes(searchVal));
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-brand-textSecondary text-xs">Tidak ada log transaksi.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-brand-textSecondary text-xs">Tidak ada log transaksi.</td></tr>`;
                 return;
             }
+
+            const segmenColors = {
+                RETAIL: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                INDUSTRI: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                TNI: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                POLRI: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+                RAE: 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+            };
 
             [...filtered].reverse().forEach(item => {
                 const dayName = hariIndo[new Date(item.tanggal).getDay()];
                 const totalRealisasi = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
+                const segClass = segmenColors[item.segmen] || segmenColors.RETAIL;
                 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/40 transition">
@@ -1826,6 +2013,11 @@
                         <td class="py-3.5 px-3">
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.shift === 'Shift I' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
                                 ${item.shift}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-3">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${segClass}">
+                                ${item.segmen || 'RETAIL'}
                             </span>
                         </td>
                         <td class="py-3.5 px-3 text-right font-mono text-emerald-400 font-semibold" title="Plan: ${item.plan_biosolar || item.biosolar} KL | Cancel: ${item.cancel_biosolar || 0} KL">${item.biosolar.toFixed(2)}</td>
@@ -1852,7 +2044,7 @@
         }
 
         // GENERATE REKOMENDASI DAN EVALUASI DEVASI (PREDICTIVE ALERTER)
-        function gener3t24NpUrJMNunMMASmhAM953bFGeLXzN7() {
+        function generateDynamicRecommendations() {
             const container = document.getElementById('recommendation-cards-container');
             container.innerHTML = '';
 
@@ -1948,11 +2140,11 @@
             // Set Warning Text Dinamis
             document.getElementById('dynamic-warning-text').innerHTML = `
                 Sistem mendeteksi bahwa hari <strong>${hariIndo[busyDayIdx].toUpperCase()}</strong> secara konsisten memiliki beban muat tertinggi. 
-                <br/><span class="text-white font-semibold">ANALISIS RISIKO:</span> Jika tingkat pembatalan (*cancel rate*) berada di atas 10%, lakukan penyesuaian pemesanan stok timbun satu hari sebelum hari ${hariIndo[busyDayIdx]} (yaitu hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]}) guna menghindari *dead-stock* or pengendapan modal berlebih di SPBU tujuan IT Gorontalo.
+                <br/><span class="text-white font-semibold">ANALISIS RISIKO:</span> Jika tingkat pembatalan (*cancel rate*) berada di atas 10%, lakukan penyesuaian pemesanan stok timbun satu hari sebelum hari ${hariIndo[busyDayIdx]} (yaitu hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]}) guna menghindari *dead-stock* atau pengendapan modal berlebih di SPBU tujuan IT Gorontalo.
             `;
         }
 
-        // EKSPOR LAPORAN KE EXCEL DENGAN INTEGRASI SHIFT & PLAN-CANCEL DETAIL
+        // EKSPOR LAPORAN KE EXCEL DENGAN INTEGRASI SHIFT & PLAN-CANCEL DETAIL & SEGMEN KONSUMEN
         function exportToExcel() {
             if (bbmData.length === 0) {
                 showNotification("Tidak ada data transaksi untuk diekspor ke Excel.", "error");
@@ -1961,7 +2153,7 @@
 
             const wb = XLSX.utils.book_new();
 
-            // TAB 1: DATA TRANSAKSI UTAMA (DENGAN DETIL PLAN, CANCEL & REALISASI)
+            // TAB 1: DATA TRANSAKSI UTAMA (DENGAN DETIL PLAN, CANCEL, REALISASI, DAN SEGMEN)
             const listTransaksi = [...bbmData].sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal)).map(item => {
                 const totalReal = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
                 
@@ -1976,6 +2168,7 @@
                     "Hari": hariIndo[new Date(item.tanggal).getDay()],
                     "Tanggal": item.tanggal,
                     "Shift": item.shift,
+                    "Segmen Pelanggan": item.segmen || 'RETAIL',
                     // Biosolar
                     "Plan BIOSOLAR (KL)": getP('biosolar'),
                     "Cancel BIOSOLAR (KL)": getC('biosolar'),
@@ -2063,7 +2256,19 @@
             XLSX.utils.book_append_sheet(wb, wsBulanan, "Ringkasan Per Bulan");
 
             XLSX.writeFile(wb, "LAPORAN_BBM_PLAN_VS_CANCEL_IT_GORONTALO.xlsx");
-            showNotification("Berkas Excel berhasil diunduh dengan detail Plan & Cancel!");
+            showNotification("Berkas Excel berhasil diunduh dengan detail Plan, Cancel & Segmen!");
+        }
+
+        // TAMBAHKAN RENDERING SEGMENT CHART DI SINI
+        function renderDashboard() {
+            renderTable();
+            calculateKPIs();
+            renderMainDistributionChart();
+            renderProductShareChart();
+            renderCustomerSegmentChart(); // Render polar area segment baru
+            renderWeeklyPatternChart();   // Render grafik ganda plan vs realisasi
+            renderTargetPlanWidget();
+            generateDynamicRecommendations();
         }
     </script>
 </body>

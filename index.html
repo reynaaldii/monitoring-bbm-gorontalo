@@ -91,9 +91,10 @@
         </div>
     </header>
 
-    <div class="flex-1 flex flex-col lg:flex-row">
-        <!-- SIDEBAR PANEL - KONTROL DATA -->
-        <aside class="w-full lg:w-85 bg-brand-cardbg lg:border-r border-brand-border p-5 flex flex-col gap-5 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <!-- MAIN CONTAINER (MENGGUNAKAN LAYOUT SEJAJAR & STICKY ASIDE) -->
+    <div class="flex-1 flex flex-col lg:flex-row items-start">
+        <!-- SIDEBAR PANEL - KONTROL DATA (SINKRON STICKY DESKTOP & SCROLLABLE LOKAL) -->
+        <aside class="w-full lg:w-[400px] lg:shrink-0 bg-brand-cardbg lg:border-r border-brand-border p-5 flex flex-col gap-5 lg:sticky lg:top-[73px] lg:h-[calc(100vh-73px)] lg:overflow-y-auto">
             <!-- INPUT DATA BARU -->
             <div>
                 <h2 class="text-sm font-bold text-white uppercase tracking-wider mb-3.5 flex items-center gap-2" id="form-title">
@@ -246,8 +247,8 @@
             </div>
         </aside>
 
-        <!-- MAIN MONITORING AREA -->
-        <main class="flex-1 p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <!-- MAIN MONITORING AREA (SINKRON UNTUK SCROLL HALAMAN ALAMI) -->
+        <main class="flex-1 p-6 space-y-6 min-w-0 w-full">
             
             <!-- POPUP NOTIFICATION TOAST -->
             <div id="toast-notif" class="hidden fixed bottom-6 right-6 z-50 bg-slate-800 border-l-4 border-emerald-500 text-white px-5 py-3.5 rounded-r-xl shadow-2xl flex items-center gap-3 transition-all transform translate-y-10 opacity-0">
@@ -1175,7 +1176,7 @@
             renderProductShareChart();
             renderWeeklyPatternChart();
             renderTargetPlanWidget(); // Render proyeksi target harian esok baru
-            gener3nP5oFahNL86vESFrkKjmuupsQa1mPzN7();
+            gener3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
         }
 
         // FUNGSI PEMBANTU UNTUK MENGATUR TEKS ELEMEN SECARA AMAN (Mencegah crash jika elemen HTML tidak ada)
@@ -1194,7 +1195,7 @@
             return `${hariIndo[d.getDay()]}, ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // 🌟 FITUR BARU: VISUALISASI PROYEKSI & TARGET PENYALURAN ESOK / CARI TANGGAL 🌟
+        // 🌟 VISUALISASI PROYEKSI & TARGET PENYALURAN ESOK / CARI TANGGAL 🌟
         function renderTargetPlanWidget() {
             const dateInput = document.getElementById('target-plan-date');
             if (!dateInput.value) {
@@ -1474,7 +1475,7 @@
                 });
 
             } else {
-                // B. JIKA PRODUK TERTENTU DIPILIH: TAMPILKAN PERBANDINGAN PLAN VS CANCEL VS REALISASI (SANGAT INFORMATIF!)
+                // B. JIKA PRODUK TERTENTU DIPILIH: TAMPILKAN PERBANDINGAN PLAN VS CANCEL VS REALISASI
                 const currentProductLabel = productsConfig[productFilter].label;
                 document.getElementById('main-chart-title').innerHTML = `<i data-lucide="line-chart" class="w-5 h-5 text-indigo-400 inline-block align-text-bottom mr-1"></i> Analisis Target & Deviasi: ${currentProductLabel}`;
                 document.getElementById('main-chart-desc').innerText = `Grafik evaluasi perbandingan antara Rencana (Plan), Pembatalan (Cancel) dan Penyaluran Riil (Realisasi) untuk produk ${currentProductLabel}`;
@@ -1666,7 +1667,7 @@
                     `;
                 });
             } else {
-                // JIKA PRODUK DIPILIH: Tampilkan Proporsi Penyaluran Berhasil vs Cancel (Rasio Efisiensi Rencana)
+                // JIKA PRODUK DIPILIH: Tampilkan Proporsi Penyaluran Berhasil vs Cancel
                 const currentProductLabel = productsConfig[productFilter].label;
                 document.getElementById('share-chart-title').innerHTML = `<i class="w-5 h-5 text-blue-400 inline-block align-text-bottom mr-1" data-lucide="pie-chart"></i> Analisis Deviasi Rencana`;
                 document.getElementById('share-chart-desc').innerText = `Rasio Penyaluran Sukses (Realisasi) vs Cancel khusus produk ${currentProductLabel}`;
@@ -1830,7 +1831,7 @@
         }
 
         // GENERATE REKOMENDASI DAN EVALUASI DEVASI (PREDICTIVE ALERTER)
-        function gener3nP5oFahNL86vESFrkKjmuupsQa1mPzN7() {
+        function gener3t24NpUrJMNunMMASmhAM953bFGeLXzN7() {
             const container = document.getElementById('recommendation-cards-container');
             container.innerHTML = '';
 

@@ -117,7 +117,7 @@
                         </div>
                     </div>
 
-                    <!-- SEGMEN PENERIMA DROPDOWN (UPDATED TO 5 SEGMEN) -->
+                    <!-- SEGMEN PENERIMA DROPDOWN (5 SEGMEN) -->
                     <div>
                         <label class="block text-[10px] text-brand-textSecondary mb-1 font-semibold">Segmen Penerima (Customer)</label>
                         <select id="input-segmen" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
@@ -129,106 +129,111 @@
                         </select>
                     </div>
 
-                    <!-- PRODUK INPUT GRID (PLAN VS CANCEL) -->
+                    <!-- PRODUK INPUT GRID (PLANNING, REALISASI & CANCEL) -->
                     <div class="space-y-3">
-                        <span class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider block border-b border-brand-border/60 pb-1">Detail Rencana & Deviasi (KL)</span>
+                        <span class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider block border-b border-brand-border/60 pb-1">Planning, Realisasi & Cancel (KL)</span>
                         
                         <!-- BIOSOLARB40 -->
                         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-biosolar"></span> BIOSOLARB40
-                                </span>
-                                <span class="text-[9px] text-brand-textSecondary">Realisasi: <strong id="real-preview-biosolar" class="text-white font-mono">0.00</strong> KL</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-biosolar"></span> BIOSOLARB40
+                            </span>
+                            <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Plan Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="plan-biosolar" placeholder="0.00" oninput="calculateRealisasi('biosolar')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
                                 </div>
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="cancel-biosolar" placeholder="0.00" oninput="calculateRealisasi('biosolar')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTALITE -->
                         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-semibold text-lime-400 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-pertalite"></span> PERTALITE
-                                </span>
-                                <span class="text-[9px] text-brand-textSecondary">Realisasi: <strong id="real-preview-pertalite" class="text-white font-mono">0.00</strong> KL</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            <span class="text-[11px] font-semibold text-lime-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-pertalite"></span> PERTALITE
+                            </span>
+                            <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Plan Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="plan-pertalite" placeholder="0.00" oninput="calculateRealisasi('pertalite')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
                                 </div>
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="cancel-pertalite" placeholder="0.00" oninput="calculateRealisasi('pertalite')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTAMAX -->
                         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-semibold text-blue-400 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-pertamax"></span> PERTAMAX
-                                </span>
-                                <span class="text-[9px] text-brand-textSecondary">Realisasi: <strong id="real-preview-pertamax" class="text-white font-mono">0.00</strong> KL</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            <span class="text-[11px] font-semibold text-blue-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-pertamax"></span> PERTAMAX
+                            </span>
+                            <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Plan Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="plan-pertamax" placeholder="0.00" oninput="calculateRealisasi('pertamax')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
                                 </div>
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="cancel-pertamax" placeholder="0.00" oninput="calculateRealisasi('pertamax')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- DEXLITE -->
                         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-semibold text-orange-400 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-dexlite"></span> DEXLITE
-                                </span>
-                                <span class="text-[9px] text-brand-textSecondary">Realisasi: <strong id="real-preview-dexlite" class="text-white font-mono">0.00</strong> KL</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            <span class="text-[11px] font-semibold text-orange-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-dexlite"></span> DEXLITE
+                            </span>
+                            <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Plan Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="plan-dexlite" placeholder="0.00" oninput="calculateRealisasi('dexlite')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
                                 </div>
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="cancel-dexlite" placeholder="0.00" oninput="calculateRealisasi('dexlite')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTADEX -->
                         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-semibold text-red-400 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-pertadex"></span> PERTADEX
-                                </span>
-                                <span class="text-[9px] text-brand-textSecondary">Realisasi: <strong id="real-preview-pertadex" class="text-white font-mono">0.00</strong> KL</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            <span class="text-[11px] font-semibold text-red-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-pertadex"></span> PERTADEX
+                            </span>
+                            <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Plan Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="plan-pertadex" placeholder="0.00" oninput="calculateRealisasi('pertadex')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
                                 </div>
                                 <div>
-                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel Penyaluran</span>
-                                    <input type="number" step="0.01" min="0" id="cancel-pertadex" placeholder="0.00" oninput="calculateRealisasi('pertadex')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-2 py-1 text-xs text-white focus:outline-none">
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
                                 </div>
                             </div>
                         </div>
@@ -341,7 +346,7 @@
                         </select>
                     </div>
 
-                    <!-- Filter Segmen (UPDATED TO 5 SEGMEN) -->
+                    <!-- Filter Segmen -->
                     <div class="flex flex-col">
                         <label class="text-[10px] text-brand-textSecondary mb-1 font-semibold">SEGMEN</label>
                         <select id="filter-segmen" onchange="renderDashboard()" class="bg-slate-900 border border-brand-border rounded-lg text-xs px-3 py-2 text-white focus:outline-none">
@@ -393,6 +398,21 @@
                 </div>
             </div>
 
+            <!-- 🌟 BARU: GRAFIK ANALISIS AKURASI PERENCANAAN (PLAN VS REALISASI & CANCEL) 🌟 -->
+            <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="gauge" class="w-5 h-5 text-indigo-400 animate-pulse"></i> Analisis Akurasi Perencanaan & Efisiensi Penyaluran BBM
+                    </h3>
+                    <p class="text-xs text-brand-textSecondary">Mengukur persentase ketepatan sasaran alokasi rencana (Planning) terhadap penyaluran aktual (Realisasi) beserta volume pembatalan (Cancel) per produk</p>
+                </div>
+                <div class="w-full overflow-x-auto">
+                    <div class="relative h-80 md:h-96 min-w-[700px] w-full">
+                        <canvas id="planningAccuracyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
             <!-- TIGA KOLOM ANALISIS: SHARE PRODUK, SHARE CUSTOMER, DAN RERATA BEBAN MINGGUAN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- 1. Share Produk (Doughnut) -->
@@ -411,7 +431,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Share Segmen Pelanggan (Polar area chart - 5 SEGMEN) -->
+                <!-- 2. Share Segmen Pelanggan (Polar area chart) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
@@ -427,7 +447,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Rerata Beban Distribusi Mingguan (Grouped Bar Chart - Plan vs Realisasi) + FILTER RENTANG TANGGAL -->
+                <!-- 3. Rerata Beban Distribusi Mingguan (Grouped Bar Chart) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-1">
@@ -437,7 +457,7 @@
                         </div>
                         <p class="text-[11px] text-brand-textSecondary mb-3">Perbandingan Rencana (Plan) vs Aktual (Realisasi) harian</p>
                         
-                        <!-- NEW: Input Filter Rentang Tanggal Mingguan -->
+                        <!-- Input Filter Rentang Tanggal Mingguan -->
                         <div class="grid grid-cols-2 gap-2 mb-3 bg-slate-900/60 p-2 rounded-xl border border-brand-border/40">
                             <div>
                                 <label class="block text-[8px] text-brand-textSecondary font-extrabold mb-0.5 uppercase tracking-wider">Mulai:</label>
@@ -459,7 +479,7 @@
                 </div>
             </div>
 
-            <!-- TARGET RENCANA HARIAN (TANGGAL SPESIFIK / BESOK) -->
+            <!-- TARGET RENCANA HARIAN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="target-plan-section">
                 <div class="lg:col-span-12 bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-brand-border/60 pb-3">
@@ -566,8 +586,8 @@
                                 <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-brand-textSecondary mb-2">
                                     <i data-lucide="calendar-x" class="w-6 h-6"></i>
                                 </div>
-                                <h5 class="text-sm font-bold text-white">Belum Ada Rencana Penyaluran</h5>
-                                <p class="text-xs text-brand-textSecondary max-w-xs mt-1">Silakan input data rencana penyaluran untuk tanggal ini pada formulir di sidebar kiri.</p>
+                                <div class="text-sm font-bold text-white">Belum Ada Rencana Penyaluran</div>
+                                <div class="text-xs text-brand-textSecondary max-w-xs mt-1">Silakan input data rencana penyaluran untuk tanggal ini pada formulir di sidebar kiri.</div>
                             </div>
                             <!-- Chart canvas -->
                             <div class="w-full h-64">
@@ -578,7 +598,7 @@
                 </div>
             </div>
 
-            <!-- TABEL REKOMENDASI PREDICTIVE & STOCK MAXIMIZATION -->
+            <!-- TABEL REKOMENDASI PREDICTIVE -->
             <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4" id="analysis-section">
                 <div>
                     <h3 class="text-base font-bold text-white flex items-center gap-2">
@@ -643,7 +663,7 @@
         </main>
     </div>
 
-    <!-- MODAL POPUP: INTEGRASI DATABASE (SUPABASE SETTINGS) -->
+    <!-- MODAL POPUP: INTEGRASI DATABASE -->
     <div id="db-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
         <div class="bg-brand-cardbg border border-brand-border rounded-2xl w-full max-w-lg p-6 space-y-4">
             <div class="flex justify-between items-center">
@@ -723,7 +743,6 @@
             { id: "8", tanggal: "2026-04-04", shift: "Shift II", segmen: "INDUSTRI", biosolar: 49.30, pertalite: 114.10, pertamax: 33.40, dexlite: 13.00, pertadex: 8.20, plan_biosolar: 51.30, cancel_biosolar: 2.00, plan_pertalite: 119.10, cancel_pertalite: 5.00, plan_pertamax: 33.40, cancel_pertamax: 0.00, plan_dexlite: 13.00, cancel_dexlite: 0.00, plan_pertadex: 8.50, cancel_pertadex: 0.30 }
         ];
 
-        // KONFIGURASI SUPABASE (DIBACA DARI LOCAL STORAGE JIKA SUDAH DISIMPAN)
         let supabaseConfig = {
             url: localStorage.getItem('supabase_url') || '',
             key: localStorage.getItem('supabase_key') || ''
@@ -732,12 +751,12 @@
         let bbmData = [];
         let currentChartScope = 'daily';
         
-        // INSTANSI GRAFIK-GRAFIK UTAMA
         let mainChart = null;
         let productShareChart = null;
         let customerSegmentChart = null; 
         let weeklyPatternChart = null;
         let targetPlanChart = null; 
+        let planningAccuracyChart = null; 
 
         const productsConfig = {
             biosolar: { label: 'BIOSOLARB40', color: '#10b981' },
@@ -747,7 +766,6 @@
             pertadex: { label: 'PERTADEX', color: '#ef4444' }
         };
 
-        // 5 SEGMEN PELANGGAN BARU (BUMN DIHAPUS)
         const segmentsConfig = {
             RETAIL: { label: 'RETAIL (Lembaga Penyalur)', color: '#3b82f6' }, 
             INDUSTRI: { label: 'INDUSTRI', color: '#a855f7' },   
@@ -763,13 +781,12 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today;
 
-            // Atur Tanggal Default Proyeksi Target ke Besok (Sistem Date + 1 Hari)
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('target-plan-date').value = tomorrow.toISOString().split('T')[0];
 
-            // Jalankan inisialisasi awal formulir untuk review Realisasi
-            Object.keys(productsConfig).forEach(k => calculateRealisasi(k));
+            // Jalankan inisialisasi awal formulir untuk review kalkulasi sinkron
+            Object.keys(productsConfig).forEach(k => calculateDeviasi(k, 'plan'));
 
             initApp();
             
@@ -782,7 +799,34 @@
             const plan = parseFloat(document.getElementById(`plan-${productKey}`).value) || 0;
             const cancel = parseFloat(document.getElementById(`cancel-${productKey}`).value) || 0;
             const real = Math.max(0, plan - cancel);
-            document.getElementById(`real-preview-${productKey}`).innerText = real.toFixed(2);
+            const previewEl = document.getElementById(`real-preview-${productKey}`);
+            if (previewEl) previewEl.innerText = real.toFixed(2);
+        }
+
+        // 🌟 SINKRONISASI PINTAR 3 KOLOM INPUT (PLANNING, REALISASI, CANCEL) 🌟
+        function calculateDeviasi(product, changedField) {
+            const planEl = document.getElementById(`plan-${product}`);
+            const realEl = document.getElementById(`real-${product}`);
+            const cancelEl = document.getElementById(`cancel-${product}`);
+            
+            let plan = parseFloat(planEl.value) || 0;
+            let real = parseFloat(realEl.value) || 0;
+            let cancel = parseFloat(cancelEl.value) || 0;
+            
+            if (changedField === 'plan' || changedField === 'cancel') {
+                real = Math.max(0, plan - cancel);
+                realEl.value = real > 0 ? real.toFixed(2) : '0.00';
+            } else if (changedField === 'real') {
+                if (real > plan) {
+                    plan = real;
+                    planEl.value = plan.toFixed(2);
+                    cancel = 0;
+                    cancelEl.value = '0.00';
+                } else {
+                    cancel = Math.max(0, plan - real);
+                    cancelEl.value = cancel.toFixed(2);
+                }
+            }
         }
 
         async function initApp() {
@@ -1056,40 +1100,49 @@
             const editId = document.getElementById('edit-id').value;
             const tanggal = document.getElementById('input-date').value;
             const shift = document.getElementById('input-shift').value;
-            const segmen = document.getElementById('input-segmen').value; // Ambil nilai segmen baru
+            const segmen = document.getElementById('input-segmen').value;
 
-            // Baca Plan & Cancel, kalkulasikan Realisasi secara aman
             const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
 
+            // Baca Rencana, Realisasi Aktual, dan Cancel Batal
             const plan_biosolar = getVal('plan-biosolar');
+            const real_biosolar = getVal('real-biosolar');
             const cancel_biosolar = getVal('cancel-biosolar');
+
             const plan_pertalite = getVal('plan-pertalite');
+            const real_pertalite = getVal('real-pertalite');
             const cancel_pertalite = getVal('cancel-pertalite');
+
             const plan_pertamax = getVal('plan-pertamax');
+            const real_pertamax = getVal('real-pertamax');
             const cancel_pertamax = getVal('cancel-pertamax');
+
             const plan_dexlite = getVal('plan-dexlite');
+            const real_dexlite = getVal('real-dexlite');
             const cancel_dexlite = getVal('cancel-dexlite');
+
             const plan_pertadex = getVal('plan-pertadex');
+            const real_pertadex = getVal('real-pertadex');
             const cancel_pertadex = getVal('cancel-pertadex');
 
             const record = {
                 id: editId || Date.now().toString(),
                 tanggal,
                 shift,
-                segmen, // Daftarkan segmen baru
-                // Realisasi (Lama/Inti)
-                biosolar: Math.max(0, plan_biosolar - cancel_biosolar),
-                pertalite: Math.max(0, plan_pertalite - cancel_pertalite),
-                pertamax: Math.max(0, plan_pertamax - cancel_pertamax),
-                dexlite: Math.max(0, plan_dexlite - cancel_dexlite),
-                pertadex: Math.max(0, plan_pertadex - cancel_pertadex),
-                // Plan Baru
+                segmen,
+                // Realisasi dipetakan langsung ke struktur inti
+                biosolar: real_biosolar,
+                pertalite: real_pertalite,
+                pertamax: real_pertamax,
+                dexlite: real_dexlite,
+                pertadex: real_pertadex,
+                // Plan Target
                 plan_biosolar,
                 plan_pertalite,
                 plan_pertamax,
                 plan_dexlite,
                 plan_pertadex,
-                // Cancel Baru
+                // Cancel Batal
                 cancel_biosolar,
                 cancel_pertalite,
                 cancel_pertamax,
@@ -1156,16 +1209,17 @@
             document.getElementById('edit-id').value = item.id;
             document.getElementById('input-date').value = item.tanggal;
             document.getElementById('input-shift').value = item.shift;
-            document.getElementById('input-segmen').value = item.segmen || 'RETAIL'; // Restore segmen
+            document.getElementById('input-segmen').value = item.segmen || 'RETAIL';
 
-            // Isi nilai Plan & Cancel, jika data lama tidak ada Plan maka samakan dengan realisasi
+            // Muat nilai ke form input 3 kolom
             Object.keys(productsConfig).forEach(pKey => {
                 const planVal = item[`plan_${pKey}`] !== undefined ? item[`plan_${pKey}`] : (item[pKey] || 0);
                 const cancelVal = item[`cancel_${pKey}`] !== undefined ? item[`cancel_${pKey}`] : 0;
+                const realVal = item[pKey] || 0; // core column holds realisasi
                 
                 document.getElementById(`plan-${pKey}`).value = planVal;
                 document.getElementById(`cancel-${pKey}`).value = cancelVal;
-                calculateRealisasi(pKey);
+                document.getElementById(`real-${pKey}`).value = realVal;
             });
 
             // Perubahan UI menjadi Mode Edit
@@ -1185,7 +1239,7 @@
         function resetFormState() {
             document.getElementById('form-penyaluran').reset();
             document.getElementById('edit-id').value = "";
-            document.getElementById('input-segmen').value = "RETAIL"; // Reset segmen
+            document.getElementById('input-segmen').value = "RETAIL";
 
             document.getElementById('form-title').classList.remove('text-blue-500');
             document.getElementById('form-title').classList.add('text-emerald-500');
@@ -1199,14 +1253,41 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today;
 
-            Object.keys(productsConfig).forEach(k => calculateRealisasi(k));
+            Object.keys(productsConfig).forEach(k => calculateDeviasi(k, 'plan'));
             lucide.createIcons();
+        }
+
+        function triggerDelete(id) {
+            openConfirmModal("Hapus Log Penyaluran", "Yakin ingin menghapus baris penyaluran ini? Data yang terhapus tidak dapat dikembalikan.", async () => {
+                if (supabaseConfig.url && supabaseConfig.key) {
+                    try {
+                        const response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'apikey': supabaseConfig.key,
+                                'Authorization': `Bearer ${supabaseConfig.key}`
+                            }
+                        });
+                        if (response.ok) {
+                            await loadDataFromSupabase();
+                            showNotification("Transaksi cloud berhasil dihapus!");
+                        }
+                    } catch (err) {
+                        showNotification("Gagal menghapus data dari cloud.", "error");
+                    }
+                } else {
+                    bbmData = bbmData.filter(d => d.id !== id);
+                    localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+                    renderDashboard();
+                    showNotification("Satu log transaksi lokal terhapus.", "warning");
+                }
+            });
         }
 
         // AGREGASI DAN PENYARINGAN DATA AKTIF (SINKRON SEGMEN BARU - 5 SEGMEN)
         function getFilteredData() {
             const shiftFilter = document.getElementById('filter-shift').value;
-            const segmenFilter = document.getElementById('filter-segmen').value; // Baca filter segmen
+            const segmenFilter = document.getElementById('filter-segmen').value;
             let data = [...bbmData];
 
             if (shiftFilter !== 'Semua Shift') {
@@ -1226,154 +1307,15 @@
             }
         }
 
-        // FORMAT TANGGAL KE BAHASA INDONESIA CANTIK
+        // 🌟 FORMAT TANGGAL KE BAHASA INDONESIA CANTIK 🌟
         function formatDateIndo(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
             if (isNaN(d)) return dateStr;
-            return `${hariIndo[d.getDay()]} , ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
+            return `${hariIndo[d.getDay()]}, ${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // 🌟 INTEGRASI MAKSIMAL: VISUALISASI PROYEKSI & TARGET PENYALURAN SENSITIF SHIFT & SEGMEN AKTIF 🌟
-        function renderTargetPlanWidget() {
-            const dateInput = document.getElementById('target-plan-date');
-            if (!dateInput.value) {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                dateInput.value = tomorrow.toISOString().split('T')[0];
-            }
-            
-            const selectedDate = dateInput.value;
-            const activeShiftFilter = document.getElementById('filter-shift').value;
-            const activeSegmenFilter = document.getElementById('filter-segmen').value; // Integrasi Segmen
-            
-            // Saring semua record yang berada pada tanggal terpilih ini
-            let dayRecords = bbmData.filter(item => item.tanggal === selectedDate);
-            
-            // SENSITIF FILTER SHIFT & SEGMEN GLOBAL
-            if (activeShiftFilter !== 'Semua Shift') {
-                dayRecords = dayRecords.filter(item => item.shift === activeShiftFilter);
-            }
-            if (activeSegmenFilter !== 'Semua Segmen') {
-                dayRecords = dayRecords.filter(item => (item.segmen || 'RETAIL') === activeSegmenFilter);
-            }
-            
-            let planSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
-            let realSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
-            const hasData = dayRecords.length > 0;
-            
-            dayRecords.forEach(item => {
-                Object.keys(productsConfig).forEach(k => {
-                    const real = item[k] || 0;
-                    const plan = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : real;
-                    planSums[k] += plan;
-                    realSums[k] += real;
-                });
-            });
-            
-            const totalPlan = Object.values(planSums).reduce((a, b) => a + b, 0);
-            const totalReal = Object.values(realSums).reduce((a, b) => a + b, 0);
-            
-            // Tulis ringkasan data di widget dengan keterangan Shift & Segmen aktif
-            const shiftText = activeShiftFilter === 'Semua Shift' ? 'Semua Shift' : activeShiftFilter;
-            const segText = activeSegmenFilter === 'Semua Segmen' ? 'Semua Segmen' : activeSegmenFilter;
-            setText('target-plan-date-display', `${formatDateIndo(selectedDate)} | ${shiftText} | ${segText}`);
-            setText('target-plan-total', totalPlan.toFixed(2) + " KL");
-            setText('target-real-total', totalReal.toFixed(2) + " KL");
-            
-            const ctx = document.getElementById('targetPlanChart').getContext('2d');
-            if (targetPlanChart) targetPlanChart.destroy();
-            
-            if (!hasData) {
-                // Tampilkan banner state kosong
-                document.getElementById('target-plan-empty-state').classList.remove('hidden');
-                document.getElementById('targetPlanChart').classList.add('opacity-0');
-                
-                // Reset progress bar visual ke 0
-                Object.keys(productsConfig).forEach(k => {
-                    const bar = document.getElementById(`target-progress-bar-${k}`);
-                    const textVal = document.getElementById(`target-val-text-${k}`);
-                    if (bar) bar.style.width = '0%';
-                    if (textVal) textVal.innerText = '0.00 KL';
-                });
-                return;
-            }
-            
-            document.getElementById('target-plan-empty-state').classList.add('hidden');
-            document.getElementById('targetPlanChart').classList.remove('opacity-0');
-            
-            // Update Progress Bar Persentase Alokasi Rencana
-            Object.keys(productsConfig).forEach(k => {
-                const planVal = planSums[k];
-                const pct = totalPlan > 0 ? (planVal / totalPlan * 100) : 0;
-                
-                const bar = document.getElementById(`target-progress-bar-${k}`);
-                const textVal = document.getElementById(`target-val-text-${k}`);
-                if (bar) bar.style.width = `${pct}%`;
-                if (textVal) textVal.innerText = `${planVal.toFixed(2)} KL`;
-            });
-            
-            // Gambar Grafik Batang Horizontal Perbandingan Plan vs Realisasi
-            const chartLabels = Object.keys(productsConfig).map(k => productsConfig[k].label);
-            const planData = Object.keys(productsConfig).map(k => planSums[k]);
-            const realData = Object.keys(productsConfig).map(k => realSums[k]);
-            
-            targetPlanChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [
-                        {
-                            label: 'Plan (Target Rencana)',
-                            data: planData,
-                            backgroundColor: '#3b82f6aa', // Biru Transparan
-                            borderColor: '#3b82f6',
-                            borderWidth: 1.5,
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Realisasi (Aktual Terkirim)',
-                            data: realData,
-                            backgroundColor: '#10b981aa', // Hijau Transparan
-                            borderColor: '#10b981',
-                            borderWidth: 1.5,
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    indexAxis: 'y', // Membalikkan grafik menjadi horizontal
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-                        y: { grid: { display: false }, ticks: { color: '#f8fafc', font: { size: 10, weight: 'bold' } } }
-                    }
-                }
-            });
-            lucide.createIcons();
-        }
-
-        // FUNGSI UNTUK MENGGANTI CAKUPAN GRAFIK (DAILY, MONTHLY, QUARTERLY)
-        function switchChartScope(scope) {
-            currentChartScope = scope;
-            ['daily', 'monthly', 'quarterly'].forEach(sc => {
-                const btn = document.getElementById(`btn-scope-${sc}`);
-                if (btn) {
-                    btn.className = (sc === scope)
-                        ? "px-3 py-1.5 rounded-md font-medium transition bg-blue-600 text-white"
-                        : "px-3 py-1.5 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
-                }
-            });
-            renderMainDistributionChart();
-        }
-
-        // KALKULASI KPI UTAMA DENGAN INTEGRASI PLAN, CANCEL, DAN SEGMEN
+        // KANVAS PERHITUNGAN KPI UTAMA DENGAN INTEGRASI AMAN
         function calculateKPIs() {
             const filteredData = getFilteredData();
             const productFilter = document.getElementById('filter-product').value;
@@ -1448,7 +1390,285 @@
             }
         }
 
-        // RENDER LINE/AREA DISTRIBUTION CHART (PLAN VS CANCEL VS REALISASI)
+        // RENDERING GRAFIK BARU: AKURASI & DEVASI PENYALURAN (PLAN VS REALISASI & CANCEL)
+        function renderPlanningAccuracyChart() {
+            const ctx = document.getElementById('planningAccuracyChart').getContext('2d');
+            if (planningAccuracyChart) planningAccuracyChart.destroy();
+
+            const filteredData = getFilteredData();
+            if (filteredData.length === 0) {
+                planningAccuracyChart = new Chart(ctx, { type: 'bar', data: { datasets: [] } });
+                return;
+            }
+
+            let planSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            let realSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            let cancelSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+
+            filteredData.forEach(item => {
+                Object.keys(productsConfig).forEach(k => {
+                    const real = item[k] || 0;
+                    const plan = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : real;
+                    const cancel = item[`cancel_${k}`] !== undefined ? item[`cancel_${k}`] : 0;
+
+                    planSums[k] += plan;
+                    realSums[k] += real;
+                    cancelSums[k] += cancel;
+                });
+            });
+
+            const labels = Object.keys(productsConfig).map(k => productsConfig[k].label);
+            const planData = Object.keys(productsConfig).map(k => planSums[k]);
+            const realData = Object.keys(productsConfig).map(k => realSums[k]);
+            const cancelData = Object.keys(productsConfig).map(k => cancelSums[k]);
+            
+            // Kalkulasi Persentase Akurasi Penyaluran (Realisasi / Plan * 100%)
+            const accuracyData = Object.keys(productsConfig).map(k => {
+                const plan = planSums[k];
+                const real = realSums[k];
+                return plan > 0 ? parseFloat((real / plan * 100).toFixed(1)) : 100;
+            });
+
+            planningAccuracyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Planning (Target Rencana)',
+                            data: planData,
+                            backgroundColor: '#3b82f6cc', // Royal Blue
+                            borderColor: '#3b82f6',
+                            borderWidth: 1.5,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Realisasi (Aktual Penyaluran)',
+                            data: realData,
+                            backgroundColor: '#10b981cc', // Emerald Green
+                            borderColor: '#10b981',
+                            borderWidth: 1.5,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Cancel (Batal)',
+                            data: cancelData,
+                            backgroundColor: '#ef4444cc', // Crimson Red
+                            borderColor: '#ef4444',
+                            borderWidth: 1.5,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Akurasi Penyaluran (%)',
+                            data: accuracyData,
+                            type: 'line',
+                            borderColor: '#f59e0b', // Glowing Amber
+                            backgroundColor: '#f59e0b',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.datasetIndex === 3) {
+                                        label += context.raw + '%';
+                                    } else {
+                                        label += context.raw.toFixed(2) + ' KL';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: 'bold' } }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8' },
+                            title: {
+                                display: true,
+                                text: 'Volume Penyaluran (KL)',
+                                color: '#94a3b8'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            min: 0,
+                            max: 120,
+                            grid: { drawOnChartArea: false }, 
+                            ticks: { 
+                                color: '#f59e0b',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Persentase Akurasi (%)',
+                                color: '#f59e0b'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // INTEGRASI MAKSIMAL: VISUALISASI PROYEKSI & TARGET PENYALURAN SENSITIF SHIFT & SEGMEN AKTIF
+        function renderTargetPlanWidget() {
+            const dateInput = document.getElementById('target-plan-date');
+            if (!dateInput.value) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                dateInput.value = tomorrow.toISOString().split('T')[0];
+            }
+            
+            const selectedDate = dateInput.value;
+            const activeShiftFilter = document.getElementById('filter-shift').value;
+            const activeSegmenFilter = document.getElementById('filter-segmen').value;
+            
+            let dayRecords = bbmData.filter(item => item.tanggal === selectedDate);
+            
+            if (activeShiftFilter !== 'Semua Shift') {
+                dayRecords = dayRecords.filter(item => item.shift === activeShiftFilter);
+            }
+            if (activeSegmenFilter !== 'Semua Segmen') {
+                dayRecords = dayRecords.filter(item => (item.segmen || 'RETAIL') === activeSegmenFilter);
+            }
+            
+            let planSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            let realSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            const hasData = dayRecords.length > 0;
+            
+            dayRecords.forEach(item => {
+                Object.keys(productsConfig).forEach(k => {
+                    const real = item[k] || 0;
+                    const plan = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : real;
+                    planSums[k] += plan;
+                    realSums[k] += real;
+                });
+            });
+            
+            const totalPlan = Object.values(planSums).reduce((a, b) => a + b, 0);
+            const totalReal = Object.values(realSums).reduce((a, b) => a + b, 0);
+            
+            const shiftText = activeShiftFilter === 'Semua Shift' ? 'Semua Shift' : activeShiftFilter;
+            const segText = activeSegmenFilter === 'Semua Segmen' ? 'Semua Segmen' : activeSegmenFilter;
+            setText('target-plan-date-display', `${formatDateIndo(selectedDate)} | ${shiftText} | ${segText}`);
+            setText('target-plan-total', totalPlan.toFixed(2) + " KL");
+            setText('target-real-total', totalReal.toFixed(2) + " KL");
+            
+            const ctx = document.getElementById('targetPlanChart').getContext('2d');
+            if (targetPlanChart) targetPlanChart.destroy();
+            
+            if (!hasData) {
+                document.getElementById('target-plan-empty-state').classList.remove('hidden');
+                document.getElementById('targetPlanChart').classList.add('opacity-0');
+                
+                Object.keys(productsConfig).forEach(k => {
+                    const bar = document.getElementById(`target-progress-bar-${k}`);
+                    const textVal = document.getElementById(`target-val-text-${k}`);
+                    if (bar) bar.style.width = '0%';
+                    if (textVal) textVal.innerText = '0.00 KL';
+                });
+                return;
+            }
+            
+            document.getElementById('target-plan-empty-state').classList.add('hidden');
+            document.getElementById('targetPlanChart').classList.remove('opacity-0');
+            
+            Object.keys(productsConfig).forEach(k => {
+                const planVal = planSums[k];
+                const pct = totalPlan > 0 ? (planVal / totalPlan * 100) : 0;
+                
+                const bar = document.getElementById(`target-progress-bar-${k}`);
+                const textVal = document.getElementById(`target-val-text-${k}`);
+                if (bar) bar.style.width = `${pct}%`;
+                if (textVal) textVal.innerText = `${planVal.toFixed(2)} KL`;
+            });
+            
+            const chartLabels = Object.keys(productsConfig).map(k => productsConfig[k].label);
+            const planData = Object.keys(productsConfig).map(k => planSums[k]);
+            const realData = Object.keys(productsConfig).map(k => realSums[k]);
+            
+            targetPlanChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Plan (Target Rencana)',
+                            data: planData,
+                            backgroundColor: '#3b82f6aa', 
+                            borderColor: '#3b82f6',
+                            borderWidth: 1.5,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Realisasi (Aktual Terkirim)',
+                            data: realData,
+                            backgroundColor: '#10b981aa', 
+                            borderColor: '#10b981',
+                            borderWidth: 1.5,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { grid: { display: false }, ticks: { color: '#f8fafc', font: { size: 10, weight: 'bold' } } }
+                    }
+                }
+            });
+            lucide.createIcons();
+        }
+
+        // FUNGSI UNTUK MENGGANTI CAKUPAN GRAFIK (DAILY, MONTHLY, QUARTERLY)
+        function switchChartScope(scope) {
+            currentChartScope = scope;
+            ['daily', 'monthly', 'quarterly'].forEach(sc => {
+                const btn = document.getElementById(`btn-scope-${sc}`);
+                if (btn) {
+                    btn.className = (sc === scope)
+                        ? "px-3 py-1.5 rounded-md font-medium transition bg-blue-600 text-white"
+                        : "px-3 py-1.5 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
+                }
+            });
+            renderMainDistributionChart();
+        }
+
+        // RENDER LINE/AREA DISTRIBUTION CHART
         function renderMainDistributionChart() {
             const ctx = document.getElementById('mainDistributionChart').getContext('2d');
             if (mainChart) mainChart.destroy();
@@ -1464,10 +1684,9 @@
             let labels = [];
             let datasets = [];
 
-            // A. JIKA FILTER "SEMUA PRODUK": Tampilkan Tren Realisasi dari Kelima Produk
             if (productFilter === 'Semua Produk') {
-                document.getElementById('main-chart-title').innerHTML = `<i data-lucide="line-chart" class="w-5 h-5 text-blue-500 inline-block align-text-bottom mr-1"></i> Tren Penyaluran Realisasi BBM`;
-                document.getElementById('main-chart-desc').innerText = "Menampilkan volume realisasi (Plan dikurangi Cancel) untuk seluruh produk BBM";
+                document.getElementById('main-chart-title').innerHTML = `<i class="w-5 h-5 text-blue-500 inline-block align-text-bottom mr-1"></i> Tren Penyaluran Realisasi BBM`;
+                document.getElementById('main-chart-desc').innerText = "Menampilkan volume realisasi untuk seluruh produk BBM";
 
                 let datasetsData = { biosolar: [], pertalite: [], pertamax: [], dexlite: [], pertadex: [] };
                 
@@ -1499,7 +1718,6 @@
                         }
                     });
                 } else {
-                    // Quarterly
                     let qSummary = {
                         'Triwulan I (Q1)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false },
                         'Triwulan II (Q2)': { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0, active: false },
@@ -1540,10 +1758,9 @@
                 });
 
             } else {
-                // B. JIKA PRODUK TERTENTU DIPILIH: TAMPILKAN PERBANDINGAN PLAN VS CANCEL VS REALISASI
                 const currentProductLabel = productsConfig[productFilter].label;
-                document.getElementById('main-chart-title').innerHTML = `<i data-lucide="line-chart" class="w-5 h-5 text-indigo-400 inline-block align-text-bottom mr-1"></i> Analisis Target & Deviasi: ${currentProductLabel}`;
-                document.getElementById('main-chart-desc').innerText = `Grafik evaluasi perbandingan antara Rencana (Plan), Pembatalan (Cancel) dan Penyaluran Riil (Realisasi) untuk produk ${currentProductLabel}`;
+                document.getElementById('main-chart-title').innerHTML = `<i class="w-5 h-5 text-indigo-400 inline-block align-text-bottom mr-1"></i> Analisis Target & Deviasi: ${currentProductLabel}`;
+                document.getElementById('main-chart-desc').innerText = `Grafik komparatif antara Rencana (Plan), Pembatalan (Cancel) dan Penyaluran Riil (Realisasi) untuk produk ${currentProductLabel}`;
 
                 let planTrend = [];
                 let cancelTrend = [];
@@ -1631,7 +1848,7 @@
                     {
                         label: `Plan (Rencana) ${currentProductLabel}`,
                         data: planTrend,
-                        borderColor: '#3b82f6', // Biru
+                        borderColor: '#3b82f6', 
                         backgroundColor: '#3b82f605',
                         borderWidth: 2,
                         tension: 0.3
@@ -1639,7 +1856,7 @@
                     {
                         label: `Cancel (Batal) ${currentProductLabel}`,
                         data: cancelTrend,
-                        borderColor: '#ef4444', // Merah
+                        borderColor: '#ef4444', 
                         backgroundColor: '#ef444405',
                         borderWidth: 2,
                         tension: 0.3
@@ -1647,7 +1864,7 @@
                     {
                         label: `Realisasi (Aktual) ${currentProductLabel}`,
                         data: realTrend,
-                        borderColor: productsConfig[productFilter].color, // Warna asli produk
+                        borderColor: productsConfig[productFilter].color, 
                         backgroundColor: productsConfig[productFilter].color + '15',
                         fill: true,
                         borderWidth: 3,
@@ -1674,7 +1891,7 @@
             lucide.createIcons();
         }
 
-        // RENDER DONUT CHART: KOMPOSISI SINKRON (PRODUK / REALISASI VS CANCEL)
+        // RENDER DONUT CHART: KOMPOSISI SINKRON
         function renderProductShareChart() {
             const ctx = document.getElementById('productShareChart').getContext('2d');
             if (productShareChart) productShareChart.destroy();
@@ -1732,7 +1949,6 @@
                     `;
                 });
             } else {
-                // JIKA PRODUK DIPILIH: Tampilkan Proporsi Penyaluran Berhasil vs Cancel
                 const currentProductLabel = productsConfig[productFilter].label;
                 document.getElementById('share-chart-title').innerHTML = `<i class="w-5 h-5 text-blue-400 inline-block align-text-bottom mr-1" data-lucide="pie-chart"></i> Analisis Deviasi Rencana`;
                 document.getElementById('share-chart-desc').innerText = `Rasio Penyaluran Sukses (Realisasi) vs Cancel khusus produk ${currentProductLabel}`;
@@ -1752,7 +1968,7 @@
                 });
 
                 const labels = ['Sukses Realisasi', 'Batal / Cancel'];
-                const colors = ['#10b981', '#ef4444']; // Hijau & Merah
+                const colors = ['#10b981', '#ef4444']; 
                 const rawData = [totalRealisasi, totalCancel];
 
                 productShareChart = new Chart(ctx, {
@@ -1783,7 +1999,7 @@
             lucide.createIcons();
         }
 
-        // 🌟 WIDGET GRAFIK BARU: POLAR AREA KOMPOSISI SEGMEN PELANGGAN (5 SEGMEN) 🌟
+        // WIDGET GRAFIK: POLAR AREA KOMPOSISI SEGMEN PELANGGAN (5 SEGMEN)
         function renderCustomerSegmentChart() {
             const ctx = document.getElementById('customerSegmentChart').getContext('2d');
             if (customerSegmentChart) customerSegmentChart.destroy();
@@ -1798,7 +2014,6 @@
                 return;
             }
 
-            // Agregasi volume realisasi per segmen pelanggan
             let segmentSums = { RETAIL: 0, INDUSTRI: 0, TNI: 0, POLRI: 0, RAE: 0 };
             let grandTotal = 0;
 
@@ -1830,7 +2045,7 @@
                     labels,
                     datasets: [{
                         data: rawData,
-                        backgroundColor: colors.map(c => c + 'aa'), // Semi-transparan agar efek polar-area terlihat premium
+                        backgroundColor: colors.map(c => c + 'aa'), 
                         borderColor: '#1e293b',
                         borderWidth: 1.5
                     }]
@@ -1851,7 +2066,6 @@
                 }
             });
 
-            // Tulis Legenda Dinamis per Segmen Pelanggan (5 SEGMEN)
             Object.keys(segmentsConfig).forEach(sKey => {
                 const conf = segmentsConfig[sKey];
                 const vol = segmentSums[sKey];
@@ -1873,7 +2087,7 @@
             lucide.createIcons();
         }
 
-        // BAR CHART: KOMPARATIF BEBAN MINGGUAN (SINKRON DENGAN PLAN VS REALISASI + FILTER RENTANG TANGGAL KHUSUS)
+        // BAR CHART: KOMPARATIF BEBAN MINGGUAN (SINKRON DENGAN PLAN VS REALISASI + FILTER RENTANG TANGGAL)
         function renderWeeklyPatternChart() {
             const ctx = document.getElementById('weeklyPatternChart').getContext('2d');
             if (weeklyPatternChart) weeklyPatternChart.destroy();
@@ -1881,13 +2095,11 @@
             const filteredData = getFilteredData();
             const productFilter = document.getElementById('filter-product').value;
 
-            // Ambil filter rentang tanggal khusus untuk grafik mingguan
             const startDateVal = document.getElementById('weekly-start-date').value;
             const endDateVal = document.getElementById('weekly-end-date').value;
 
             let chartData = [...filteredData];
 
-            // Filter rentang tanggal jika diisi oleh pengguna
             if (startDateVal) {
                 chartData = chartData.filter(item => item.tanggal >= startDateVal);
             }
@@ -1900,7 +2112,6 @@
                 return;
             }
 
-            // Agregasi Plan dan Realisasi per hari dalam seminggu
             let planSums = Array(7).fill(0);
             let realSums = Array(7).fill(0);
             let counts = Array(7).fill(0);
@@ -1931,7 +2142,7 @@
             const avgRealData = realSums.map((s, idx) => counts[idx] > 0 ? (s / counts[idx]) : 0);
 
             const orderedLabels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
-            const orderedIndices = [1, 2, 3, 4, 5, 6, 0]; // Urut dari Senin s/d Minggu
+            const orderedIndices = [1, 2, 3, 4, 5, 6, 0]; 
             
             const finalPlanChartData = orderedIndices.map(idx => avgPlanData[idx]);
             const finalRealChartData = orderedIndices.map(idx => avgRealData[idx]);
@@ -1944,7 +2155,7 @@
                         {
                             label: 'Rerata Rencana (Plan)',
                             data: finalPlanChartData,
-                            backgroundColor: '#3b82f6aa', // Indigo
+                            backgroundColor: '#3b82f6aa', 
                             borderColor: '#3b82f6',
                             borderWidth: 1,
                             borderRadius: 4,
@@ -1953,7 +2164,7 @@
                         {
                             label: 'Rerata Realisasi (Aktual)',
                             data: finalRealChartData,
-                            backgroundColor: '#10b981aa', // Green
+                            backgroundColor: '#10b981aa', 
                             borderColor: '#10b981',
                             borderWidth: 1,
                             borderRadius: 4,
@@ -1978,7 +2189,7 @@
             });
         }
 
-        // TABEL LOG TRANSAKSI INTEGRAL (MENAMPILKAN NILAI REALISASI DAN BADGE SEGMEN)
+        // TABEL LOG TRANSAKSI INTEGRAL
         function renderTable() {
             const tbody = document.getElementById('table-body-penyaluran');
             const searchVal = document.getElementById('search-data').value.toLowerCase();
@@ -2072,7 +2283,6 @@
             let averages = {};
             Object.keys(totals).forEach(k => averages[k] = totals[k] / dayCount);
 
-            // Deteksi hari tersibuk harian
             let daysSum = Array(7).fill(0);
             let daysCount = Array(7).fill(0);
             filteredData.forEach(item => {
@@ -2092,7 +2302,6 @@
                 }
             }
 
-            // Tampilkan kartu saran mitigasi berdasarkan Cancel Rate (%) per produk
             Object.keys(productsConfig).forEach(pKey => {
                 if (productFilter === 'Semua Produk' || productFilter === pKey) {
                     const conf = productsConfig[pKey];
@@ -2108,7 +2317,7 @@
                     if (cancelRate > 15) {
                         status = "HIGH Cancellation";
                         badgeColor = "bg-rose-500/20 text-rose-400 border-rose-500/30";
-                        safetyStockPct = 5; // Batalkan stok karena banyak pembatalan
+                        safetyStockPct = 5; 
                     } else if (avgReal > 80) {
                         safetyStockPct = 25;
                         status = "CRITICAL Demand";
@@ -2137,27 +2346,23 @@
                 }
             });
 
-            // Set Warning Text Dinamis
             document.getElementById('dynamic-warning-text').innerHTML = `
                 Sistem mendeteksi bahwa hari <strong>${hariIndo[busyDayIdx].toUpperCase()}</strong> secara konsisten memiliki beban muat tertinggi. 
                 <br/><span class="text-white font-semibold">ANALISIS RISIKO:</span> Jika tingkat pembatalan (*cancel rate*) berada di atas 10%, lakukan penyesuaian pemesanan stok timbun satu hari sebelum hari ${hariIndo[busyDayIdx]} (yaitu hari ${hariIndo[busyDayIdx === 0 ? 6 : busyDayIdx - 1]}) guna menghindari *dead-stock* atau pengendapan modal berlebih di SPBU tujuan IT Gorontalo.
             `;
         }
 
-        // EKSPOR LAPORAN KE EXCEL DENGAN INTEGRASI SHIFT & PLAN-CANCEL DETAIL & SEGMEN KONSUMEN
+        // EKSPOR LAPORAN KE EXCEL
         function exportToExcel() {
             if (bbmData.length === 0) {
-                showNotification("Tidak ada data transaksi untuk diekspor ke Excel.", "error");
+                showNotification("Tidak ada data transaksi untuk diekspor.", "error");
                 return;
             }
 
             const wb = XLSX.utils.book_new();
 
-            // TAB 1: DATA TRANSAKSI UTAMA (DENGAN DETIL PLAN, CANCEL, REALISASI, DAN SEGMEN)
             const listTransaksi = [...bbmData].sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal)).map(item => {
                 const totalReal = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
-                
-                // Ambil Plan / Cancel secara aman
                 const getP = (p) => item[`plan_${p}`] !== undefined ? item[`plan_${p}`] : (item[p] || 0);
                 const getC = (p) => item[`cancel_${p}`] !== undefined ? item[`cancel_${p}`] : 0;
 
@@ -2169,27 +2374,21 @@
                     "Tanggal": item.tanggal,
                     "Shift": item.shift,
                     "Segmen Pelanggan": item.segmen || 'RETAIL',
-                    // Biosolar
-                    "Plan BIOSOLAR (KL)": getP('biosolar'),
-                    "Cancel BIOSOLAR (KL)": getC('biosolar'),
-                    "Realisasi BIOSOLAR (KL)": item.biosolar,
-                    // Pertalite
-                    "Plan PERTALITE (KL)": getP('pertalite'),
-                    "Cancel PERTALITE (KL)": getC('pertalite'),
-                    "Realisasi PERTALITE (KL)": item.pertalite,
-                    // Pertamax
-                    "Plan PERTAMAX (KL)": getP('pertamax'),
-                    "Cancel PERTAMAX (KL)": getC('pertamax'),
-                    "Realisasi PERTAMAX (KL)": item.pertamax,
-                    // Dexlite
-                    "Plan DEXLITE (KL)": getP('dexlite'),
-                    "Cancel DEXLITE (KL)": getC('dexlite'),
-                    "Realisasi DEXLITE (KL)": item.dexlite,
-                    // Pertadex
-                    "Plan PERTADEX (KL)": getP('pertadex'),
-                    "Cancel PERTADEX (KL)": getC('pertadex'),
-                    "Realisasi PERTADEX (KL)": item.pertadex,
-                    // Summary
+                    "Plan BIOSOLAR": getP('biosolar'),
+                    "Cancel BIOSOLAR": getC('biosolar'),
+                    "Realisasi BIOSOLAR": item.biosolar,
+                    "Plan PERTALITE": getP('pertalite'),
+                    "Cancel PERTALITE": getC('pertalite'),
+                    "Realisasi PERTALITE": item.pertalite,
+                    "Plan PERTAMAX": getP('pertamax'),
+                    "Cancel PERTAMAX": getC('pertamax'),
+                    "Realisasi PERTAMAX": item.pertamax,
+                    "Plan DEXLITE": getP('dexlite'),
+                    "Cancel DEXLITE": getC('dexlite'),
+                    "Realisasi DEXLITE": item.dexlite,
+                    "Plan PERTADEX": getP('pertadex'),
+                    "Cancel PERTADEX": getC('pertadex'),
+                    "Realisasi PERTADEX": item.pertadex,
                     "TOTAL PLAN (KL)": totalPlan,
                     "TOTAL CANCEL (KL)": totalCancel,
                     "TOTAL REALISASI (KL)": totalReal
@@ -2199,7 +2398,6 @@
             const wsTransaksi = XLSX.utils.json_to_sheet(listTransaksi);
             XLSX.utils.book_append_sheet(wb, wsTransaksi, "Data Harian Penyaluran");
 
-            // TAB 2: RINGKASAN AKUMULATIF BULANAN
             let monthlySummary = Array(12).fill(null).map(() => ({ 
                 biosolar: 0, plan_biosolar: 0, cancel_biosolar: 0,
                 pertalite: 0, plan_pertalite: 0, cancel_pertalite: 0,
@@ -2232,18 +2430,15 @@
 
                     listBulanan.push({
                         "Bulan": bName,
-                        "Plan BIOSOLAR (KL)": parseFloat(s.plan_biosolar.toFixed(2)),
-                        "Cancel BIOSOLAR (KL)": parseFloat(s.cancel_biosolar.toFixed(2)),
-                        "Realisasi BIOSOLAR (KL)": parseFloat(s.biosolar.toFixed(2)),
-                        
-                        "Plan PERTALITE (KL)": parseFloat(s.plan_pertalite.toFixed(2)),
-                        "Cancel PERTALITE (KL)": parseFloat(s.cancel_pertalite.toFixed(2)),
-                        "Realisasi PERTALITE (KL)": parseFloat(s.pertalite.toFixed(2)),
-                        
-                        "Plan PERTAMAX (KL)": parseFloat(s.plan_pertamax.toFixed(2)),
-                        "Cancel PERTAMAX (KL)": parseFloat(s.cancel_pertamax.toFixed(2)),
-                        "Realisasi PERTAMAX (KL)": parseFloat(s.pertamax.toFixed(2)),
-
+                        "Plan BIOSOLAR": parseFloat(s.plan_biosolar.toFixed(2)),
+                        "Cancel BIOSOLAR": parseFloat(s.cancel_biosolar.toFixed(2)),
+                        "Realisasi BIOSOLAR": parseFloat(s.biosolar.toFixed(2)),
+                        "Plan PERTALITE": parseFloat(s.plan_pertalite.toFixed(2)),
+                        "Cancel PERTALITE": parseFloat(s.cancel_pertalite.toFixed(2)),
+                        "Realisasi PERTALITE": parseFloat(s.pertalite.toFixed(2)),
+                        "Plan PERTAMAX": parseFloat(s.plan_pertamax.toFixed(2)),
+                        "Cancel PERTAMAX": parseFloat(s.cancel_pertamax.toFixed(2)),
+                        "Realisasi PERTAMAX": parseFloat(s.pertamax.toFixed(2)),
                         "TOTAL PLAN (KL)": parseFloat(tPlan.toFixed(2)),
                         "TOTAL CANCEL (KL)": parseFloat(tCancel.toFixed(2)),
                         "TOTAL REALISASI (KL)": parseFloat(tReal.toFixed(2)),
@@ -2256,18 +2451,19 @@
             XLSX.utils.book_append_sheet(wb, wsBulanan, "Ringkasan Per Bulan");
 
             XLSX.writeFile(wb, "LAPORAN_BBM_PLAN_VS_CANCEL_IT_GORONTALO.xlsx");
-            showNotification("Berkas Excel berhasil diunduh dengan detail Plan, Cancel & Segmen!");
+            showNotification("Berkas Excel berhasil diunduh!");
         }
 
-        // TAMBAHKAN RENDERING SEGMENT CHART DI SINI
+        // FUNGSI DASHBOARD UTAMA
         function renderDashboard() {
             renderTable();
             calculateKPIs();
             renderMainDistributionChart();
             renderProductShareChart();
-            renderCustomerSegmentChart(); // Render polar area segment baru
-            renderWeeklyPatternChart();   // Render grafik ganda plan vs realisasi
+            renderCustomerSegmentChart(); 
+            renderWeeklyPatternChart();   
             renderTargetPlanWidget();
+            renderPlanningAccuracyChart(); 
             generateDynamicRecommendations();
         }
     </script>

@@ -760,38 +760,6 @@
         const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         window.onload = function () {
-            // ... existing code ...
-async function triggerDelete(id) {
-    // Pastikan fungsi ini dipanggil dengan ID yang tepat
-    openConfirmModal("Hapus Transaksi", "Anda yakin ingin menghapus data ini?", async () => {
-        if (supabaseConfig.url && supabaseConfig.key) {
-            try {
-                const response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': supabaseConfig.key,
-                        'Authorization': `Bearer ${supabaseConfig.key}`
-                    }
-                });
-                if (response.ok) {
-                    await loadDataFromSupabase();
-                    showNotification("Transaksi berhasil dihapus dari cloud.");
-                } else {
-                    throw new Error("Gagal menghapus dari cloud");
-                }
-            } catch (err) {
-                showNotification("Gagal menghapus data di cloud.", "error");
-            }
-        } else {
-            // Local delete
-            bbmData = bbmData.filter(item => item.id !== id);
-            localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
-            renderDashboard();
-            showNotification("Transaksi berhasil dihapus secara lokal.");
-        }
-    });
-}
-// ... existing code ...
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today;
 
@@ -2064,9 +2032,8 @@ async function triggerDelete(id) {
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
                                 <button onclick="triggerDelete('${item.id}')" class="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-1.5 rounded transition">
-    <!-- Tambahkan class pointer-events-none di sini agar klik tembus ke tombol -->
-    <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
-</button>
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>

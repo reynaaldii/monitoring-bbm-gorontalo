@@ -101,243 +101,139 @@
                     <i data-lucide="plus-circle" class="w-4.5 h-4.5 text-emerald-500" id="form-icon"></i> <span id="form-text-header">Input Penyaluran Harian</span>
                 </h2>
                 <form id="form-penyaluran" class="space-y-4 bg-slate-900/40 p-4 rounded-xl border border-brand-border">
-                    <!-- Dual Hidden Fields for Edit IDs -->
-                    <input type="hidden" id="edit-id-s1" value="">
-                    <input type="hidden" id="edit-id-s2" value="">
+                    <input type="hidden" id="edit-id" value="">
                     
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[10px] text-brand-textSecondary mb-1 font-medium">Tanggal Penyaluran</label>
                             <input type="date" id="input-date" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
                         </div>
-                        <!-- SEGMEN PENERIMA DROPDOWN (5 SEGMEN) -->
                         <div>
-                            <label class="block text-[10px] text-brand-textSecondary mb-1 font-semibold">Segmen Penerima</label>
-                            <select id="input-segmen" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
-                                <option value="RETAIL">RETAIL (Lembaga Penyalur)</option>
-                                <option value="INDUSTRI">INDUSTRI</option>
-                                <option value="TNI">TNI</option>
-                                <option value="POLRI">POLRI</option>
-                                <option value="RAE">RAE (Reguler Alternatif Emergency)</option>
+                            <label class="block text-[10px] text-brand-textSecondary mb-1 font-medium">Shift Kerja</label>
+                            <select id="input-shift" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                                <option value="Shift I">Shift I (Pagi)</option>
+                                <option value="Shift II">Shift II (Sore)</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- PRODUK INPUT GRID (SINKRON DUAL SHIFT TANPA FILTER SHIFT) -->
+                    <!-- SEGMEN PENERIMA DROPDOWN (5 SEGMEN) -->
+                    <div>
+                        <label class="block text-[10px] text-brand-textSecondary mb-1 font-semibold">Segmen Penerima (Customer)</label>
+                        <select id="input-segmen" required class="w-full bg-brand-cardbg border border-brand-border rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <option value="RETAIL">RETAIL (Lembaga Penyalur)</option>
+                            <option value="INDUSTRI">INDUSTRI</option>
+                            <option value="TNI">TNI</option>
+                            <option value="POLRI">POLRI</option>
+                            <option value="RAE">RAE (Reguler Alternatif Emergency)</option>
+                        </select>
+                    </div>
+
+                    <!-- PRODUK INPUT GRID (PLANNING, REALISASI & CANCEL) -->
                     <div class="space-y-3">
                         <span class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider block border-b border-brand-border/60 pb-1">Planning, Realisasi & Cancel (KL)</span>
                         
                         <!-- BIOSOLARB40 -->
-                        <div class="bg-slate-900/80 p-3 rounded-lg border border-brand-border/40 space-y-3">
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
                             <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand-biosolar"></span> BIOSOLARB40
                             </span>
-                            <!-- SHIFT 1 -->
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 block border-b border-brand-border/20 pb-0.5">SHIFT I (Pagi)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-biosolar-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-emerald-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-biosolar-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-emerald-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-biosolar-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-emerald-500">
-                                    </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
                                 </div>
-                            </div>
-                            <!-- SHIFT 2 -->
-                            <div class="space-y-1 pt-1 border-t border-brand-border/20">
-                                <span class="text-[9px] font-bold text-amber-400 block border-b border-brand-border/20 pb-0.5">SHIFT II (Sore)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-biosolar-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-biosolar-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-biosolar-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-biosolar" placeholder="0.00" oninput="calculateDeviasi('biosolar', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTALITE -->
-                        <div class="bg-slate-900/80 p-3 rounded-lg border border-brand-border/40 space-y-3">
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
                             <span class="text-[11px] font-semibold text-lime-400 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand-pertalite"></span> PERTALITE
                             </span>
-                            <!-- SHIFT 1 -->
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 block border-b border-brand-border/20 pb-0.5">SHIFT I (Pagi)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertalite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-lime-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertalite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-lime-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertalite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-lime-500">
-                                    </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
                                 </div>
-                            </div>
-                            <!-- SHIFT 2 -->
-                            <div class="space-y-1 pt-1 border-t border-brand-border/20">
-                                <span class="text-[9px] font-bold text-amber-400 block border-b border-brand-border/20 pb-0.5">SHIFT II (Sore)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertalite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertalite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertalite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertalite" placeholder="0.00" oninput="calculateDeviasi('pertalite', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-lime-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTAMAX -->
-                        <div class="bg-slate-900/80 p-3 rounded-lg border border-brand-border/40 space-y-3">
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
                             <span class="text-[11px] font-semibold text-blue-400 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand-pertamax"></span> PERTAMAX
                             </span>
-                            <!-- SHIFT 1 -->
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 block border-b border-brand-border/20 pb-0.5">SHIFT I (Pagi)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertamax-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertamax-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertamax-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
                                 </div>
-                            </div>
-                            <!-- SHIFT 2 -->
-                            <div class="space-y-1 pt-1 border-t border-brand-border/20">
-                                <span class="text-[9px] font-bold text-amber-400 block border-b border-brand-border/20 pb-0.5">SHIFT II (Sore)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertamax-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertamax-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertamax-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-blue-500">
-                                    </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertamax" placeholder="0.00" oninput="calculateDeviasi('pertamax', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-blue-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- DEXLITE -->
-                        <div class="bg-slate-900/80 p-3 rounded-lg border border-brand-border/40 space-y-3">
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
                             <span class="text-[11px] font-semibold text-orange-400 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand-dexlite"></span> DEXLITE
                             </span>
-                            <!-- SHIFT 1 -->
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 block border-b border-brand-border/20 pb-0.5">SHIFT I (Pagi)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-dexlite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-orange-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-dexlite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-orange-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-dexlite-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-orange-500">
-                                    </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
                                 </div>
-                            </div>
-                            <!-- SHIFT 2 -->
-                            <div class="space-y-1 pt-1 border-t border-brand-border/20">
-                                <span class="text-[9px] font-bold text-amber-400 block border-b border-brand-border/20 pb-0.5">SHIFT II (Sore)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-dexlite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-dexlite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-dexlite-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500">
-                                    </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-dexlite" placeholder="0.00" oninput="calculateDeviasi('dexlite', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500">
                                 </div>
                             </div>
                         </div>
 
                         <!-- PERTADEX -->
-                        <div class="bg-slate-900/80 p-3 rounded-lg border border-brand-border/40 space-y-3">
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-brand-border/40 space-y-1.5">
                             <span class="text-[11px] font-semibold text-red-400 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand-pertadex"></span> PERTADEX
                             </span>
-                            <!-- SHIFT 1 -->
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 block border-b border-brand-border/20 pb-0.5">SHIFT I (Pagi)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertadex-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertadex-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertadex-s1" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">1. Planning</span>
+                                    <input type="number" step="0.01" min="0" id="plan-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'plan')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
                                 </div>
-                            </div>
-                            <!-- SHIFT 2 -->
-                            <div class="space-y-1 pt-1 border-t border-brand-border/20">
-                                <span class="text-[9px] font-bold text-amber-400 block border-b border-brand-border/20 pb-0.5">SHIFT II (Sore)</span>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Planning</span>
-                                        <input type="number" step="0.01" min="0" id="plan-pertadex-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Realisasi</span>
-                                        <input type="number" step="0.01" min="0" id="real-pertadex-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
-                                    <div>
-                                        <span class="text-[8px] text-brand-textSecondary block mb-0.5">Cancel</span>
-                                        <input type="number" step="0.01" min="0" id="cancel-pertadex-s2" placeholder="0.00" class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none focus:border-red-500">
-                                    </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">2. Realisasi</span>
+                                    <input type="number" step="0.01" min="0" id="real-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'real')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
+                                </div>
+                                <div>
+                                    <span class="text-[8px] text-brand-textSecondary block mb-0.5 font-bold">3. Cancel</span>
+                                    <input type="number" step="0.01" min="0" id="cancel-pertadex" placeholder="0.00" oninput="calculateDeviasi('pertadex', 'cancel')" required class="w-full bg-brand-cardbg border border-brand-border rounded px-1.5 py-1 text-[10px] text-white focus:outline-none focus:border-red-500">
                                 </div>
                             </div>
                         </div>
@@ -371,6 +267,15 @@
         <!-- MAIN MONITORING AREA (SINKRON UNTUK SCROLL HALAMAN ALAMI) -->
         <main class="flex-1 p-6 space-y-6 min-w-0 w-full">
             
+            <!-- POPUP NOTIFICATION TOAST -->
+            <div id="toast-notif" class="hidden fixed bottom-6 right-6 z-50 bg-slate-800 border-l-4 border-emerald-500 text-white px-5 py-3.5 rounded-r-xl shadow-2xl flex items-center gap-3 transition-all transform translate-y-10 opacity-0">
+                <i data-lucide="bell" id="toast-icon" class="w-5 h-5 text-emerald-400"></i>
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase" id="toast-header">Sistem Notifikasi</h4>
+                    <p class="text-xs text-brand-textSecondary" id="toast-message">Data berhasil diproses!</p>
+                </div>
+            </div>
+
             <!-- CARDS TOTAL AKUMULASI (DENGAN FILTER SINKRON) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
@@ -493,29 +398,16 @@
                 </div>
             </div>
 
-            <!-- 🌟 GRAFIK ANALISIS AKURASI PERENCANAAN (PLAN VS REALISASI & CANCEL) + FILTER RENTANG TANGGAL SINKRON 🌟 -->
+            <!-- 🌟 BARU: GRAFIK ANALISIS AKURASI PERENCANAAN (PLAN VS REALISASI & CANCEL) 🌟 -->
             <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h3 class="text-base font-bold text-white flex items-center gap-2">
-                            <i data-lucide="gauge" class="w-5 h-5 text-indigo-400 animate-pulse"></i> Analisis Akurasi Perencanaan & Efisiensi Penyaluran BBM
-                        </h3>
-                        <p class="text-xs text-brand-textSecondary">Mengukur persentase ketepatan target rencana (Planning) terhadap penyaluran aktual (Realisasi) beserta volume pembatalan (Cancel) secara kumulatif</p>
-                    </div>
-                    <!-- NEW: Kotak Pencarian Tanggal Rentang khusus Grafik Akurasi -->
-                    <div class="flex flex-wrap items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-brand-border">
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider">Mulai:</label>
-                            <input type="date" id="accuracy-start-date" onchange="renderPlanningAccuracyChart()" class="bg-brand-cardbg border border-brand-border rounded-lg px-2.5 py-1 text-[10px] text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[10px] font-bold text-brand-textSecondary uppercase tracking-wider">Selesai:</label>
-                            <input type="date" id="accuracy-end-date" onchange="renderPlanningAccuracyChart()" class="bg-brand-cardbg border border-brand-border rounded-lg px-2.5 py-1 text-[10px] text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
-                        </div>
-                    </div>
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="gauge" class="w-5 h-5 text-indigo-400 animate-pulse"></i> Analisis Akurasi Perencanaan & Efisiensi Penyaluran BBM
+                    </h3>
+                    <p class="text-xs text-brand-textSecondary">Mengukur persentase ketepatan sasaran alokasi rencana (Planning) terhadap penyaluran aktual (Realisasi) beserta volume pembatalan (Cancel) per produk</p>
                 </div>
                 <div class="w-full overflow-x-auto">
-                    <div class="relative h-80 md:h-96 min-w-[750px] w-full">
+                    <div class="relative h-80 md:h-96 min-w-[700px] w-full">
                         <canvas id="planningAccuracyChart"></canvas>
                     </div>
                 </div>
@@ -523,7 +415,7 @@
 
             <!-- TIGA KOLOM ANALISIS: SHARE PRODUK, SHARE CUSTOMER, DAN RERATA BEBAN MINGGUAN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- 1. Share BBM (Doughnut) -->
+                <!-- 1. Share Produk (Doughnut) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1" id="share-chart-title">
@@ -539,7 +431,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Share Segmen Pelanggan (Polar area chart - 5 SEGMEN) -->
+                <!-- 2. Share Segmen Pelanggan (Polar area chart) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
@@ -555,7 +447,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Rerata Beban Distribusi Mingguan -->
+                <!-- 3. Rerata Beban Distribusi Mingguan (Grouped Bar Chart) -->
                 <div class="lg:col-span-4 bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
                     <div>
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-1">
@@ -874,7 +766,6 @@
             pertadex: { label: 'PERTADEX', color: '#ef4444' }
         };
 
-        // 5 SEGMEN PELANGGAN BARU (BUMN DIHAPUS)
         const segmentsConfig = {
             RETAIL: { label: 'RETAIL (Lembaga Penyalur)', color: '#3b82f6' }, 
             INDUSTRI: { label: 'INDUSTRI', color: '#a855f7' },   
@@ -894,8 +785,8 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('target-plan-date').value = tomorrow.toISOString().split('T')[0];
 
-            // Inisialisasi awal form
-            resetFormState();
+            // Jalankan inisialisasi awal formulir untuk review kalkulasi sinkron
+            Object.keys(productsConfig).forEach(k => calculateDeviasi(k, 'plan'));
 
             initApp();
             
@@ -903,10 +794,39 @@
             updateClock();
         }
 
-        // FUNGSI UNTUK SINKRONISASI 3 KOLOM INPUT (PLANNING, REALISASI, CANCEL) TANPA AUTO-KALKULASI SAAT MENGETIK
+        // FUNGSI UTK MENGHITUNG REALISASI SECARA INSTAN DI FORMULIR INPUT
+        function calculateRealisasi(productKey) {
+            const plan = parseFloat(document.getElementById(`plan-${productKey}`).value) || 0;
+            const cancel = parseFloat(document.getElementById(`cancel-${productKey}`).value) || 0;
+            const real = Math.max(0, plan - cancel);
+            const previewEl = document.getElementById(`real-preview-${productKey}`);
+            if (previewEl) previewEl.innerText = real.toFixed(2);
+        }
+
+        // 🌟 SINKRONISASI PINTAR 3 KOLOM INPUT (PLANNING, REALISASI, CANCEL) 🌟
         function calculateDeviasi(product, changedField) {
-            // Logika auto-kalkulasi saat mengetik telah dihapus penuh atas permintaan user.
-            // Membiarkan input bekerja murni manual independen.
+            const planEl = document.getElementById(`plan-${product}`);
+            const realEl = document.getElementById(`real-${product}`);
+            const cancelEl = document.getElementById(`cancel-${product}`);
+            
+            let plan = parseFloat(planEl.value) || 0;
+            let real = parseFloat(realEl.value) || 0;
+            let cancel = parseFloat(cancelEl.value) || 0;
+            
+            if (changedField === 'plan' || changedField === 'cancel') {
+                real = Math.max(0, plan - cancel);
+                realEl.value = real > 0 ? real.toFixed(2) : '0.00';
+            } else if (changedField === 'real') {
+                if (real > plan) {
+                    plan = real;
+                    planEl.value = plan.toFixed(2);
+                    cancel = 0;
+                    cancelEl.value = '0.00';
+                } else {
+                    cancel = Math.max(0, plan - real);
+                    cancelEl.value = cancel.toFixed(2);
+                }
+            }
         }
 
         async function initApp() {
@@ -1003,6 +923,83 @@
             }
         }
 
+        async function loadDataFromSupabase() {
+            try {
+                const response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?select=*&order=tanggal.asc,shift.asc`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': supabaseConfig.key,
+                        'Authorization': `Bearer ${supabaseConfig.key}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data && data.length === 0) {
+                    console.log("Database cloud kosong. Mengunggah data lokal...");
+                    await syncLocalDataToCloud();
+                    return true;
+                }
+
+                bbmData = data;
+                renderDashboard();
+                updateStatusBadge('online');
+                return true;
+
+            } catch (err) {
+                console.error("Kesalahan Supabase:", err);
+                const errorLog = document.getElementById('db-modal-error');
+                if (errorLog) {
+                    errorLog.innerText = `Kesalahan: ${err.message}.\n\nTips: Pastikan URL tidak mengandung '/rest/v1/' di inputan Anda. Dan pastikan fitur Row Level Security (RLS) di Supabase SQL Editor Anda sudah dinonaktifkan.`;
+                    errorLog.classList.remove('hidden');
+                }
+                updateStatusBadge('local');
+                return false;
+            }
+        }
+
+        async function syncLocalDataToCloud() {
+            const localData = JSON.parse(localStorage.getItem('it_gorontalo_bbm_data')) || [...MOCK_DATA];
+            if (localData.length === 0) return;
+
+            try {
+                const response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': supabaseConfig.key,
+                        'Authorization': `Bearer ${supabaseConfig.key}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(localData)
+                });
+
+                if (response.ok) {
+                    bbmData = localData;
+                    renderDashboard();
+                    updateStatusBadge('online');
+                }
+            } catch (err) {
+                console.error("Gagal sinkron data lokal ke cloud:", err);
+            }
+        }
+
+        function openDbModal() {
+            document.getElementById('supabase-url').value = supabaseConfig.url;
+            document.getElementById('supabase-key').value = supabaseConfig.key;
+            document.getElementById('db-modal-error').classList.add('hidden');
+            document.getElementById('db-modal').classList.remove('hidden');
+        }
+
+        function closeDbModal() {
+            document.getElementById('db-modal').classList.add('hidden');
+        }
+
         async function saveAndConnectDb() {
             let url = document.getElementById('supabase-url').value.trim();
             const key = document.getElementById('supabase-key').value.trim();
@@ -1096,173 +1093,133 @@
             });
         }
 
-        // FORM HANDLER: CRUD DENGAN PENYIMPANAN DUAL RECORD (SHIFT I & SHIFT II DIKIRIM SEKALIGUS)
+        // FORM HANDLER: CRUD (TAMBAH / UPDATE)
         async function handleFormSubmit(e) {
             e.preventDefault();
 
-            const date = document.getElementById('input-date').value;
+            const editId = document.getElementById('edit-id').value;
+            const tanggal = document.getElementById('input-date').value;
+            const shift = document.getElementById('input-shift').value;
             const segmen = document.getElementById('input-segmen').value;
-
-            // Hidden fields untuk ID record lama
-            const editIdS1 = document.getElementById('edit-id-s1').value;
-            const editIdS2 = document.getElementById('edit-id-s2').value;
 
             const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
 
-            // Membangun payload data untuk SHIFT I
-            const s1Record = {
-                id: editIdS1 || (Date.now() + "-s1"),
-                tanggal: date,
-                shift: "Shift I",
-                segmen: segmen,
-                biosolar: getVal('real-biosolar-s1'),
-                pertalite: getVal('real-pertalite-s1'),
-                pertamax: getVal('real-pertamax-s1'),
-                dexlite: getVal('real-dexlite-s1'),
-                pertadex: getVal('real-pertadex-s1'),
-                plan_biosolar: getVal('plan-biosolar-s1'),
-                plan_pertalite: getVal('plan-pertalite-s1'),
-                plan_pertamax: getVal('plan-pertamax-s1'),
-                plan_dexlite: getVal('plan-dexlite-s1'),
-                plan_pertadex: getVal('plan-pertadex-s1'),
-                cancel_biosolar: getVal('cancel-biosolar-s1'),
-                cancel_pertalite: getVal('cancel-pertalite-s1'),
-                cancel_pertamax: getVal('cancel-pertamax-s1'),
-                cancel_dexlite: getVal('cancel-dexlite-s1'),
-                cancel_pertadex: getVal('cancel-pertadex-s1')
+            // Baca Rencana, Realisasi Aktual, dan Cancel Batal
+            const plan_biosolar = getVal('plan-biosolar');
+            const real_biosolar = getVal('real-biosolar');
+            const cancel_biosolar = getVal('cancel-biosolar');
+
+            const plan_pertalite = getVal('plan-pertalite');
+            const real_pertalite = getVal('real-pertalite');
+            const cancel_pertalite = getVal('cancel-pertalite');
+
+            const plan_pertamax = getVal('plan-pertamax');
+            const real_pertamax = getVal('real-pertamax');
+            const cancel_pertamax = getVal('cancel-pertamax');
+
+            const plan_dexlite = getVal('plan-dexlite');
+            const real_dexlite = getVal('real-dexlite');
+            const cancel_dexlite = getVal('cancel-dexlite');
+
+            const plan_pertadex = getVal('plan-pertadex');
+            const real_pertadex = getVal('real-pertadex');
+            const cancel_pertadex = getVal('cancel-pertadex');
+
+            const record = {
+                id: editId || Date.now().toString(),
+                tanggal,
+                shift,
+                segmen,
+                // Realisasi dipetakan langsung ke struktur inti
+                biosolar: real_biosolar,
+                pertalite: real_pertalite,
+                pertamax: real_pertamax,
+                dexlite: real_dexlite,
+                pertadex: real_pertadex,
+                // Plan Target
+                plan_biosolar,
+                plan_pertalite,
+                plan_pertamax,
+                plan_dexlite,
+                plan_pertadex,
+                // Cancel Batal
+                cancel_biosolar,
+                cancel_pertalite,
+                cancel_pertamax,
+                cancel_dexlite,
+                cancel_pertadex
             };
 
-            // Membangun payload data untuk SHIFT II
-            const s2Record = {
-                id: editIdS2 || (Date.now() + 1 + "-s2"),
-                tanggal: date,
-                shift: "Shift II",
-                segmen: segmen,
-                biosolar: getVal('real-biosolar-s2'),
-                pertalite: getVal('real-pertalite-s2'),
-                pertamax: getVal('real-pertamax-s2'),
-                dexlite: getVal('real-dexlite-s2'),
-                pertadex: getVal('real-pertadex-s2'),
-                plan_biosolar: getVal('plan-biosolar-s2'),
-                plan_pertalite: getVal('plan-pertalite-s2'),
-                plan_pertamax: getVal('plan-pertamax-s2'),
-                plan_dexlite: getVal('plan-dexlite-s2'),
-                plan_pertadex: getVal('plan-pertadex-s2'),
-                cancel_biosolar: getVal('cancel-biosolar-s2'),
-                cancel_pertalite: getVal('cancel-pertalite-s2'),
-                cancel_pertamax: getVal('cancel-pertamax-s2'),
-                cancel_dexlite: getVal('cancel-dexlite-s2'),
-                cancel_pertadex: getVal('cancel-pertadex-s2')
-            };
+            const isEdit = editId !== "";
 
             if (supabaseConfig.url && supabaseConfig.key) {
                 try {
-                    // Simpan Shift I ke Supabase
-                    let resS1;
-                    if (editIdS1) {
-                        resS1 = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${editIdS1}`, {
+                    let response;
+                    if (isEdit) {
+                        response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${editId}`, {
                             method: 'PATCH',
-                            headers: { 'apikey': supabaseConfig.key, 'Authorization': `Bearer ${supabaseConfig.key}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify(s1Record)
+                            headers: {
+                                'apikey': supabaseConfig.key,
+                                'Authorization': `Bearer ${supabaseConfig.key}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(record)
                         });
                     } else {
-                        resS1 = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring`, {
+                        response = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring`, {
                             method: 'POST',
-                            headers: { 'apikey': supabaseConfig.key, 'Authorization': `Bearer ${supabaseConfig.key}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify(s1Record)
+                            headers: {
+                                'apikey': supabaseConfig.key,
+                                'Authorization': `Bearer ${supabaseConfig.key}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(record)
                         });
                     }
 
-                    // Simpan Shift II ke Supabase
-                    let resS2;
-                    if (editIdS2) {
-                        resS2 = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring?id=eq.${editIdS2}`, {
-                            method: 'PATCH',
-                            headers: { 'apikey': supabaseConfig.key, 'Authorization': `Bearer ${supabaseConfig.key}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify(s2Record)
-                        });
-                    } else {
-                        resS2 = await fetch(`${supabaseConfig.url}/rest/v1/bbm_monitoring`, {
-                            method: 'POST',
-                            headers: { 'apikey': supabaseConfig.key, 'Authorization': `Bearer ${supabaseConfig.key}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify(s2Record)
-                        });
-                    }
-
-                    if (resS1.ok && resS2.ok) {
+                    if (response.ok) {
                         await loadDataFromSupabase();
-                        showNotification("Data Shift I & II Berhasil Disinkronkan ke Cloud!");
+                        showNotification(isEdit ? "Transaksi cloud berhasil diperbarui!" : "Transaksi baru tersimpan di Supabase Cloud!");
                     } else {
-                        throw new Error("Penyimpanan cloud bermasalah.");
+                        throw new Error("Respon server gagal menyimpan");
                     }
                 } catch (err) {
                     showNotification("Gagal sinkronisasi data ke Cloud.", "error");
                 }
             } else {
-                // Sisi Fallback Lokal Offline
-                const updateLocal = (record, id) => {
-                    if (id) {
-                        const idx = bbmData.findIndex(item => item.id === id);
-                        if (idx >= 0) bbmData[idx] = record;
-                    } else {
-                        bbmData.push(record);
-                    }
-                };
-
-                updateLocal(s1Record, editIdS1);
-                updateLocal(s2Record, editIdS2);
-
+                if (isEdit) {
+                    const idx = bbmData.findIndex(item => item.id === editId);
+                    if (idx >= 0) bbmData[idx] = record;
+                } else {
+                    bbmData.push(record);
+                }
                 bbmData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
                 localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
                 renderDashboard();
-                showNotification("Data Shift I & II sukses disimpan di memori lokal browser!");
+                showNotification(isEdit ? "Log penyaluran berhasil diubah!" : "Penyaluran baru ditambahkan secara lokal.");
             }
 
             resetFormState();
         }
 
-        // FUNGSI EDIT PENYALURAN: MEMANGGIL DUA RECORD SEKALIGUS (SHIFT I & II) UNTUK HARI DAN SEGMEN YANG SAMA
         function startEdit(id) {
             const item = bbmData.find(d => d.id === id);
             if (!item) return;
 
-            const date = item.tanggal;
-            const segmen = item.segmen || 'RETAIL';
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('input-date').value = item.tanggal;
+            document.getElementById('input-shift').value = item.shift;
+            document.getElementById('input-segmen').value = item.segmen || 'RETAIL';
 
-            // Temukan kedua record shift terkait
-            const s1Item = bbmData.find(d => d.tanggal === date && (d.segmen || 'RETAIL') === segmen && d.shift === 'Shift I');
-            const s2Item = bbmData.find(d => d.tanggal === date && (d.segmen || 'RETAIL') === segmen && d.shift === 'Shift II');
-
-            document.getElementById('input-date').value = date;
-            document.getElementById('input-segmen').value = segmen;
-
-            // Daftarkan ID record ke form hidden
-            document.getElementById('edit-id-s1').value = s1Item ? s1Item.id : '';
-            document.getElementById('edit-id-s2').value = s2Item ? s2Item.id : '';
-
-            // Populasi data ke form 3 kolom
+            // Muat nilai ke form input 3 kolom
             Object.keys(productsConfig).forEach(pKey => {
-                // Shift I
-                if (s1Item) {
-                    document.getElementById(`plan-${pKey}-s1`).value = s1Item[`plan_${pKey}`] !== undefined ? s1Item[`plan_${pKey}`] : (s1Item[pKey] || 0);
-                    document.getElementById(`real-${pKey}-s1`).value = s1Item[pKey] || 0;
-                    document.getElementById(`cancel-${pKey}-s1`).value = s1Item[`cancel_${pKey}`] !== undefined ? s1Item[`cancel_${pKey}`] : 0;
-                } else {
-                    document.getElementById(`plan-${pKey}-s1`).value = '';
-                    document.getElementById(`real-${pKey}-s1`).value = '';
-                    document.getElementById(`cancel-${pKey}-s1`).value = '';
-                }
-
-                // Shift II
-                if (s2Item) {
-                    document.getElementById(`plan-${pKey}-s2`).value = s2Item[`plan_${pKey}`] !== undefined ? s2Item[`plan_${pKey}`] : (s2Item[pKey] || 0);
-                    document.getElementById(`real-${pKey}-s2`).value = s2Item[pKey] || 0;
-                    document.getElementById(`cancel-${pKey}-s2`).value = s2Item[`cancel_${pKey}`] !== undefined ? s2Item[`cancel_${pKey}`] : 0;
-                } else {
-                    document.getElementById(`plan-${pKey}-s2`).value = '';
-                    document.getElementById(`real-${pKey}-s2`).value = '';
-                    document.getElementById(`cancel-${pKey}-s2`).value = '';
-                }
+                const planVal = item[`plan_${pKey}`] !== undefined ? item[`plan_${pKey}`] : (item[pKey] || 0);
+                const cancelVal = item[`cancel_${pKey}`] !== undefined ? item[`cancel_${pKey}`] : 0;
+                const realVal = item[pKey] || 0; // core column holds realisasi
+                
+                document.getElementById(`plan-${pKey}`).value = planVal;
+                document.getElementById(`cancel-${pKey}`).value = cancelVal;
+                document.getElementById(`real-${pKey}`).value = realVal;
             });
 
             // Perubahan UI menjadi Mode Edit
@@ -1281,8 +1238,7 @@
 
         function resetFormState() {
             document.getElementById('form-penyaluran').reset();
-            document.getElementById('edit-id-s1').value = "";
-            document.getElementById('edit-id-s2').value = "";
+            document.getElementById('edit-id').value = "";
             document.getElementById('input-segmen').value = "RETAIL";
 
             document.getElementById('form-title').classList.remove('text-blue-500');
@@ -1297,6 +1253,7 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today;
 
+            Object.keys(productsConfig).forEach(k => calculateDeviasi(k, 'plan'));
             lucide.createIcons();
         }
 
@@ -1350,7 +1307,7 @@
             }
         }
 
-        // FORMAT TANGGAL KE BAHASA INDONESIA CANTIK
+        // 🌟 FORMAT TANGGAL KE BAHASA INDONESIA CANTIK 🌟
         function formatDateIndo(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -1433,26 +1390,13 @@
             }
         }
 
-        // 🌟 RENDERING GRAFIK BARU: AKURASI & DEVASI PENYALURAN (PLAN VS REALISASI & CANCEL) DENGAN AKUMULASI TOTAL DAN FILTER TANGGAL KHUSUS 🌟
+        // RENDERING GRAFIK BARU: AKURASI & DEVASI PENYALURAN (PLAN VS REALISASI & CANCEL)
         function renderPlanningAccuracyChart() {
             const ctx = document.getElementById('planningAccuracyChart').getContext('2d');
             if (planningAccuracyChart) planningAccuracyChart.destroy();
 
             const filteredData = getFilteredData();
-            
-            // Saring berdasarkan input pencarian rentang tanggal khusus pada grafik
-            const startDateVal = document.getElementById('accuracy-start-date').value;
-            const endDateVal = document.getElementById('accuracy-end-date').value;
-
-            let chartData = [...filteredData];
-            if (startDateVal) {
-                chartData = chartData.filter(item => item.tanggal >= startDateVal);
-            }
-            if (endDateVal) {
-                chartData = chartData.filter(item => item.tanggal <= endDateVal);
-            }
-
-            if (chartData.length === 0) {
+            if (filteredData.length === 0) {
                 planningAccuracyChart = new Chart(ctx, { type: 'bar', data: { datasets: [] } });
                 return;
             }
@@ -1461,7 +1405,7 @@
             let realSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
             let cancelSums = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
 
-            chartData.forEach(item => {
+            filteredData.forEach(item => {
                 Object.keys(productsConfig).forEach(k => {
                     const real = item[k] || 0;
                     const plan = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : real;
@@ -1473,16 +1417,10 @@
                 });
             });
 
-            // Agregasi Total Akumulasi Seluruh Produk
-            const totalPlanAll = Object.values(planSums).reduce((a, b) => a + b, 0);
-            const totalRealAll = Object.values(realSums).reduce((a, b) => a + b, 0);
-            const totalCancelAll = Object.values(cancelSums).reduce((a, b) => a + b, 0);
-
-            const labels = [...Object.keys(productsConfig).map(k => productsConfig[k].label), 'TOTAL AKUMULASI'];
-            
-            const planData = [...Object.keys(productsConfig).map(k => planSums[k]), totalPlanAll];
-            const realData = [...Object.keys(productsConfig).map(k => realSums[k]), totalRealAll];
-            const cancelData = [...Object.keys(productsConfig).map(k => cancelSums[k]), totalCancelAll];
+            const labels = Object.keys(productsConfig).map(k => productsConfig[k].label);
+            const planData = Object.keys(productsConfig).map(k => planSums[k]);
+            const realData = Object.keys(productsConfig).map(k => realSums[k]);
+            const cancelData = Object.keys(productsConfig).map(k => cancelSums[k]);
             
             // Kalkulasi Persentase Akurasi Penyaluran (Realisasi / Plan * 100%)
             const accuracyData = Object.keys(productsConfig).map(k => {
@@ -1490,10 +1428,6 @@
                 const real = realSums[k];
                 return plan > 0 ? parseFloat((real / plan * 100).toFixed(1)) : 100;
             });
-            
-            // Tambahkan persentase akurasi total
-            const totalAccuracyPct = totalPlanAll > 0 ? parseFloat((totalRealAll / totalPlanAll * 100).toFixed(1)) : 100;
-            accuracyData.push(totalAccuracyPct);
 
             planningAccuracyChart = new Chart(ctx, {
                 type: 'bar',
@@ -1533,8 +1467,8 @@
                             borderWidth: 3,
                             fill: false,
                             tension: 0.3,
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             yAxisID: 'y1'
                         }
                     ]
@@ -1583,7 +1517,7 @@
                             display: true,
                             position: 'right',
                             min: 0,
-                            max: 150, // Ditingkatkan ke 150% jika realisasi melebihi planning harian
+                            max: 120,
                             grid: { drawOnChartArea: false }, 
                             ticks: { 
                                 color: '#f59e0b',

@@ -290,7 +290,7 @@
                 <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
                     <div class="space-y-1.5">
                         <span class="text-xs font-medium text-brand-textSecondary">Total Realisasi Penyaluran</span>
-                        <h3 class="text-2xl font-black text-white" id="stat-total-ytd">0.00 KL</h3>
+                        <h3 class="text-2xl font-black text-white" id="stat-total-ytd">0 KL</h3>
                         <p class="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
                             <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Volume Aktual (Tersalurkan)
                         </p>
@@ -303,7 +303,7 @@
                 <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
                     <div class="space-y-1.5">
                         <span class="text-xs font-medium text-brand-textSecondary">Volume Rencana (Total Plan)</span>
-                        <h3 class="text-2xl font-black text-blue-400" id="stat-total-plan">0.00 KL</h3>
+                        <h3 class="text-2xl font-black text-blue-400" id="stat-total-plan">0 KL</h3>
                         <p class="text-[10px] text-brand-textSecondary">Target awal rencana distribusi</p>
                     </div>
                     <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400">
@@ -314,7 +314,7 @@
                 <div class="bg-brand-cardbg border border-brand-border rounded-2xl p-5 flex items-center justify-between shadow-sm">
                     <div class="space-y-1.5">
                         <span class="text-xs font-medium text-brand-textSecondary">Penyaluran Batal (Total Cancel)</span>
-                        <h3 class="text-2xl font-black text-rose-400" id="stat-total-cancel">0.00 KL</h3>
+                        <h3 class="text-2xl font-black text-rose-400" id="stat-total-cancel">0 KL</h3>
                         <p class="text-[10px] text-brand-textSecondary" id="stat-cancel-ratio">Deviasi / Batal: 0.00%</p>
                     </div>
                     <div class="p-3 bg-rose-500/10 rounded-xl text-rose-400">
@@ -458,10 +458,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="relative h-56 w-full">
+                    <!-- PENYESUAIAN HEIGHT MENJADI h-72 / h-80 AGAR LEGA DI LAPTOP -->
+                    <div class="relative h-72 md:h-80 w-full mt-4">
                         <canvas id="weeklyPatternChart"></canvas>
                     </div>
-                    <div class="mt-3 bg-slate-900/50 p-2.5 rounded-xl border border-brand-border text-[10px] text-brand-textSecondary flex items-center gap-2">
+                    <div class="mt-4 bg-slate-900/50 p-2.5 rounded-xl border border-brand-border text-[10px] text-brand-textSecondary flex items-center gap-2">
                         <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0"></i>
                         <span>Pola mingguan komparatif membantu tim distribusi mengevaluasi akurasi perencanaan dibanding realisasi aktual.</span>
                     </div>
@@ -497,15 +498,15 @@
                                 <div class="grid grid-cols-2 gap-3 pt-1">
                                     <div class="bg-brand-cardbg p-3 rounded-lg border border-brand-border">
                                         <span class="text-[9px] text-brand-textSecondary block">Total Target Rencana</span>
-                                        <span class="text-base font-extrabold text-blue-400 font-mono" id="target-plan-total">0.00 KL</span>
+                                        <span class="text-base font-extrabold text-blue-400 font-mono" id="target-plan-total">0 KL</span>
                                     </div>
                                     <div class="bg-brand-cardbg p-3 rounded-lg border border-brand-border">
                                         <span class="text-[9px] text-brand-textSecondary block">Total Realisasi Riil</span>
-                                        <span class="text-base font-extrabold text-emerald-400 font-mono" id="target-real-total">0.00 KL</span>
+                                        <span class="text-base font-extrabold text-emerald-400 font-mono" id="target-real-total">0 KL</span>
                                     </div>
                                     <div class="bg-slate-900/60 p-3 rounded-lg border border-brand-border col-span-2 flex items-center justify-between">
                                         <span class="text-[10px] text-brand-textSecondary font-semibold">Tingkat Akurasi (Realisasi vs Plan)</span>
-                                        <span class="text-xl font-black text-indigo-400 font-mono" id="target-accuracy-pct">0.00%</span>
+                                        <span class="text-xl font-black text-indigo-400 font-mono" id="target-accuracy-pct">0%</span>
                                     </div>
                                 </div>
                             </div>
@@ -518,7 +519,7 @@
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px]">
                                         <span class="font-medium text-white flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-biosolar"></span> BIOSOLARB40</span>
-                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-biosolar">0.00 KL</span>
+                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-biosolar">0 KL</span>
                                     </div>
                                     <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                                         <div id="target-progress-bar-biosolar" class="bg-brand-biosolar h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -529,7 +530,7 @@
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px]">
                                         <span class="font-medium text-white flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-pertalite"></span> PERTALITE</span>
-                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertalite">0.00 KL</span>
+                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertalite">0 KL</span>
                                     </div>
                                     <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                                         <div id="target-progress-bar-pertalite" class="bg-brand-pertalite h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -540,7 +541,7 @@
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px]">
                                         <span class="font-medium text-white flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-pertamax"></span> PERTAMAX</span>
-                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertamax">0.00 KL</span>
+                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertamax">0 KL</span>
                                     </div>
                                     <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                                         <div id="target-progress-bar-pertamax" class="bg-brand-pertamax h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -551,7 +552,7 @@
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px]">
                                         <span class="font-medium text-white flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-dexlite"></span> DEXLITE</span>
-                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-dexlite">0.00 KL</span>
+                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-dexlite">0 KL</span>
                                     </div>
                                     <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                                         <div id="target-progress-bar-dexlite" class="bg-brand-dexlite h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -562,7 +563,7 @@
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px]">
                                         <span class="font-medium text-white flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-pertadex"></span> PERTADEX</span>
-                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertadex">0.00 KL</span>
+                                        <span class="font-mono text-brand-textSecondary" id="target-val-text-pertadex">0 KL</span>
                                     </div>
                                     <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                                         <div id="target-progress-bar-pertadex" class="bg-brand-pertadex h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
@@ -580,7 +581,7 @@
                                 <h5 class="text-sm font-bold text-white">Belum Ada Rencana Penyaluran</h5>
                                 <p class="text-xs text-brand-textSecondary max-w-xs mt-1">Silakan input data rencana penyaluran untuk tanggal ini pada formulir di sidebar kiri.</p>
                             </div>
-                            <div class="w-full h-64">
+                            <div class="w-full h-64 md:h-80 mt-2">
                                 <canvas id="targetPlanChart"></canvas>
                             </div>
                         </div>
@@ -1274,8 +1275,8 @@
             const shiftText = activeShiftFilter === 'Semua Shift' ? 'Semua Shift' : activeShiftFilter;
             const segText = activeSegmenFilter === 'Semua Segmen' ? 'Semua Segmen' : activeSegmenFilter;
             setText('target-plan-date-display', `${formatDateIndo(selectedDate)} | ${shiftText} | ${segText}`);
-            setText('target-plan-total', totalPlan.toFixed(2) + " KL");
-            setText('target-real-total', totalReal.toFixed(2) + " KL");
+            setText('target-plan-total', Math.round(totalPlan) + " KL");
+            setText('target-real-total', Math.round(totalReal) + " KL");
 
             const pct = totalPlan > 0 ? (totalReal / totalPlan * 100) : 0;
             const accuracyEl = document.getElementById('target-accuracy-pct');
@@ -1300,7 +1301,7 @@
                     const bar = document.getElementById(`target-progress-bar-${k}`);
                     const textVal = document.getElementById(`target-val-text-${k}`);
                     if (bar) bar.style.width = '0%';
-                    if (textVal) textVal.innerText = '0.00 KL';
+                    if (textVal) textVal.innerText = '0 KL';
                 });
                 return;
             }
@@ -1315,7 +1316,7 @@
                 const bar = document.getElementById(`target-progress-bar-${k}`);
                 const textVal = document.getElementById(`target-val-text-${k}`);
                 if (bar) bar.style.width = `${pctPlan}%`;
-                if (textVal) textVal.innerText = `${planVal.toFixed(2)} KL`;
+                if (textVal) textVal.innerText = `${Math.round(planVal)} KL`;
             });
             
             const chartLabels = Object.keys(productsConfig).map(k => productsConfig[k].label);
@@ -1340,7 +1341,7 @@
                                 anchor: 'end',
                                 color: '#f8fafc',
                                 font: { size: 9 },
-                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                                formatter: (val) => val > 0 ? Math.round(val) : ''
                             }
                         },
                         {
@@ -1356,7 +1357,7 @@
                                 anchor: 'end',
                                 color: '#f8fafc',
                                 font: { size: 9 },
-                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                                formatter: (val) => val > 0 ? Math.round(val) : ''
                             }
                         }
                     ]
@@ -1386,27 +1387,14 @@
             lucide.createIcons();
         }
 
-        function switchChartScope(scope) {
-            currentChartScope = scope;
-            ['daily', 'monthly', 'quarterly'].forEach(sc => {
-                const btn = document.getElementById(`btn-scope-${sc}`);
-                if (btn) {
-                    btn.className = (sc === scope)
-                        ? "px-3 py-1.5 rounded-md font-medium transition bg-blue-600 text-white"
-                        : "px-3 py-1.5 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
-                }
-            });
-            renderMainDistributionChart();
-        }
-
         function calculateKPIs() {
             const filteredData = getFilteredData();
             const productFilter = document.getElementById('filter-product').value;
 
             if (filteredData.length === 0) {
-                setText('stat-total-ytd', "0.00 KL");
-                setText('stat-total-plan', "0.00 KL");
-                setText('stat-total-cancel', "0.00 KL");
+                setText('stat-total-ytd', "0 KL");
+                setText('stat-total-plan', "0 KL");
+                setText('stat-total-cancel', "0 KL");
                 setText('stat-cancel-ratio', "Deviasi: 0.00%");
                 setText('stat-crowded-day', "N/A");
                 setText('stat-crowded-day-detail', "Tidak ada data");
@@ -1433,9 +1421,9 @@
 
             const ratioCancel = totalPlan > 0 ? (totalCancel / totalPlan * 100) : 0;
 
-            setText('stat-total-ytd', totalRealisasi.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
-            setText('stat-total-plan', totalPlan.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
-            setText('stat-total-cancel', totalCancel.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
+            setText('stat-total-ytd', Math.round(totalRealisasi).toLocaleString('id-ID') + " KL");
+            setText('stat-total-plan', Math.round(totalPlan).toLocaleString('id-ID') + " KL");
+            setText('stat-total-cancel', Math.round(totalCancel).toLocaleString('id-ID') + " KL");
             setText('stat-cancel-ratio', `Total Batal/Deviasi: ${ratioCancel.toFixed(2)}% dari rencana`);
 
             let daysSum = Array(7).fill(0);
@@ -1465,7 +1453,7 @@
             }
             if (busiestDayIdx !== -1) {
                 setText('stat-crowded-day', hariIndo[busiestDayIdx].toUpperCase());
-                setText('stat-crowded-day-detail', `Rerata tertinggi: ${maxAvg.toFixed(2)} KL/shift`);
+                setText('stat-crowded-day-detail', `Rerata tertinggi: ${Math.round(maxAvg)} KL/shift`);
             }
         }
 
@@ -1559,7 +1547,7 @@
                             align: 'top',
                             color: conf.color, // Mengikuti warna produk
                             font: { size: 9, weight: 'bold' },
-                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            formatter: (val) => val > 0 ? Math.round(val) : ''
                         }
                     });
                 });
@@ -1654,7 +1642,7 @@
                             align: 'top',
                             color: '#93c5fd', // blue-300
                             font: { size: 9, weight: 'bold' },
-                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            formatter: (val) => val > 0 ? Math.round(val) : ''
                         }
                     },
                     {
@@ -1670,7 +1658,7 @@
                             align: 'top',
                             color: productsConfig[productFilter].color,
                             font: { size: 9, weight: 'bold' },
-                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            formatter: (val) => val > 0 ? Math.round(val) : ''
                         }
                     }
                 ];
@@ -1690,7 +1678,7 @@
                         y: { 
                             grid: { color: '#1e293b' }, 
                             ticks: { color: '#94a3b8' },
-                            grace: '10%' // Ruang ekstra agar label tidak terpotong di atas
+                            grace: '20%' // Ruang ekstra agar label tidak terpotong di atas
                         }
                     }
                 }
@@ -1748,7 +1736,7 @@
                                 <span class="font-medium text-white text-[11px]">${conf.label}</span>
                             </div>
                             <div class="font-mono text-[10px]">
-                                <span class="text-brand-textSecondary mr-2">${totals[pKey].toFixed(1)} KL</span>
+                                <span class="text-brand-textSecondary mr-2">${Math.round(totals[pKey])} KL</span>
                                 <span class="text-emerald-400 font-semibold">${pct}%</span>
                             </div>
                         </div>
@@ -1795,7 +1783,7 @@
                                 <span class="font-medium text-white text-[11px]">${label}</span>
                             </div>
                             <div class="font-mono text-[10px]">
-                                <span class="text-brand-textSecondary mr-2">${rawData[idx].toFixed(1)} KL</span>
+                                <span class="text-brand-textSecondary mr-2">${Math.round(rawData[idx])} KL</span>
                                 <span class="text-white font-semibold" style="color: ${colors[idx]}">${pct}%</span>
                             </div>
                         </div>
@@ -1883,7 +1871,7 @@
                             <span class="font-medium text-white text-[11px]">${conf.label}</span>
                         </div>
                         <div class="font-mono text-[10px]">
-                            <span class="text-brand-textSecondary mr-2">${vol.toFixed(1)} KL</span>
+                            <span class="text-brand-textSecondary mr-2">${Math.round(vol)} KL</span>
                             <span class="text-indigo-400 font-bold">${pct}%</span>
                         </div>
                     </div>
@@ -1963,14 +1951,14 @@
                             borderColor: '#3b82f6',
                             borderWidth: 1,
                             borderRadius: 4,
-                            maxBarThickness: 15,
+                            maxBarThickness: 30,
                             datalabels: {
                                 display: true,
                                 align: 'end',
                                 anchor: 'end',
                                 color: '#93c5fd', // blue-300
                                 font: { size: 9, weight: 'bold' },
-                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                                formatter: (val) => val > 0 ? Math.round(val) : ''
                             }
                         },
                         {
@@ -1980,14 +1968,14 @@
                             borderColor: '#10b981',
                             borderWidth: 1,
                             borderRadius: 4,
-                            maxBarThickness: 15,
+                            maxBarThickness: 30,
                             datalabels: {
                                 display: true,
                                 align: 'end',
                                 anchor: 'end',
                                 color: '#6ee7b7', // emerald-300
                                 font: { size: 9, weight: 'bold' },
-                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                                formatter: (val) => val > 0 ? Math.round(val) : ''
                             }
                         }
                     ]
@@ -2006,7 +1994,7 @@
                         y: { 
                             grid: { color: '#1e293b' }, 
                             ticks: { color: '#94a3b8', font: { size: 9 } },
-                            grace: '15%' // Ruang ekstra di puncak grafik agar angka label tidak terpotong
+                            grace: '20%' // Ruang ekstra di puncak grafik agar angka label tidak terpotong
                         }
                     }
                 }
@@ -2039,11 +2027,11 @@
                 const segClass = segmenColors[item.segmen] || segmenColors.RETAIL;
                 
                 // Menyiapkan teks hover/tooltip untuk Tabel Transaksi Log secara akurat
-                const ttBio = `Plan: ${item.plan_biosolar !== undefined ? item.plan_biosolar : item.biosolar} KL | Cancel: ${item.cancel_biosolar || 0} KL`;
-                const ttPrt = `Plan: ${item.plan_pertalite !== undefined ? item.plan_pertalite : item.pertalite} KL | Cancel: ${item.cancel_pertalite || 0} KL`;
-                const ttPmx = `Plan: ${item.plan_pertamax !== undefined ? item.plan_pertamax : item.pertamax} KL | Cancel: ${item.cancel_pertamax || 0} KL`;
-                const ttDex = `Plan: ${item.plan_dexlite !== undefined ? item.plan_dexlite : item.dexlite} KL | Cancel: ${item.cancel_dexlite || 0} KL`;
-                const ttPdx = `Plan: ${item.plan_pertadex !== undefined ? item.plan_pertadex : item.pertadex} KL | Cancel: ${item.cancel_pertadex || 0} KL`;
+                const ttBio = `Plan: ${Math.round(item.plan_biosolar !== undefined ? item.plan_biosolar : item.biosolar)} KL | Cancel: ${Math.round(item.cancel_biosolar || 0)} KL`;
+                const ttPrt = `Plan: ${Math.round(item.plan_pertalite !== undefined ? item.plan_pertalite : item.pertalite)} KL | Cancel: ${Math.round(item.cancel_pertalite || 0)} KL`;
+                const ttPmx = `Plan: ${Math.round(item.plan_pertamax !== undefined ? item.plan_pertamax : item.pertamax)} KL | Cancel: ${Math.round(item.cancel_pertamax || 0)} KL`;
+                const ttDex = `Plan: ${Math.round(item.plan_dexlite !== undefined ? item.plan_dexlite : item.dexlite)} KL | Cancel: ${Math.round(item.cancel_dexlite || 0)} KL`;
+                const ttPdx = `Plan: ${Math.round(item.plan_pertadex !== undefined ? item.plan_pertadex : item.pertadex)} KL | Cancel: ${Math.round(item.cancel_pertadex || 0)} KL`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/40 transition">
@@ -2061,12 +2049,12 @@
                                 ${item.segmen || 'RETAIL'}
                             </span>
                         </td>
-                        <td class="py-3.5 px-3 text-right font-mono text-emerald-400 font-semibold cursor-help" title="${ttBio}">${item.biosolar.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-lime-400 font-semibold cursor-help" title="${ttPrt}">${item.pertalite.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-blue-400 font-semibold cursor-help" title="${ttPmx}">${item.pertamax.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-orange-400 font-semibold cursor-help" title="${ttDex}">${item.dexlite.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-red-400 font-semibold cursor-help" title="${ttPdx}">${item.pertadex.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono font-bold text-white bg-slate-800/15">${totalRealisasi.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-emerald-400 font-semibold cursor-help" title="${ttBio}">${Math.round(item.biosolar)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-lime-400 font-semibold cursor-help" title="${ttPrt}">${Math.round(item.pertalite)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-blue-400 font-semibold cursor-help" title="${ttPmx}">${Math.round(item.pertamax)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-orange-400 font-semibold cursor-help" title="${ttDex}">${Math.round(item.dexlite)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-red-400 font-semibold cursor-help" title="${ttPdx}">${Math.round(item.pertadex)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono font-bold text-white bg-slate-800/15">${Math.round(totalRealisasi)}</td>
                         <td class="py-3.5 px-3 text-center">
                             <div class="flex items-center justify-center gap-1.5">
                                 <button onclick="startEdit('${item.tanggal}', '${item.segmen}')" class="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-1.5 rounded transition">
@@ -2172,7 +2160,7 @@
                                 <h4 class="text-lg font-bold" style="color: ${conf.color}">+${safetyStockPct}% Vol</h4>
                             </div>
                             <p class="text-[10px] text-brand-textSecondary leading-snug">
-                                Tingkat Batal: <strong class="text-white">${cancelRate.toFixed(1)}%</strong>. Disarankan stok optimal SPBU: <strong>${(avgReal * (1 + safetyStockPct/100)).toFixed(1)} KL</strong> sebelum hari <strong>${hariIndo[busyDayIdx]}</strong>.
+                                Tingkat Batal: <strong class="text-white">${cancelRate.toFixed(1)}%</strong>. Disarankan stok optimal SPBU: <strong>${Math.round(avgReal * (1 + safetyStockPct/100))} KL</strong> sebelum hari <strong>${hariIndo[busyDayIdx]}</strong>.
                             </p>
                         </div>
                     `;
@@ -2207,24 +2195,24 @@
                     "Tanggal": item.tanggal,
                     "Shift": item.shift,
                     "Segmen Pelanggan": item.segmen || 'RETAIL',
-                    "Plan BIOSOLAR (KL)": getP('biosolar'),
-                    "Cancel/Deviasi BIOSOLAR (KL)": getC('biosolar'),
-                    "Realisasi BIOSOLAR (KL)": item.biosolar,
-                    "Plan PERTALITE (KL)": getP('pertalite'),
-                    "Cancel/Deviasi PERTALITE (KL)": getC('pertalite'),
-                    "Realisasi PERTALITE (KL)": item.pertalite,
-                    "Plan PERTAMAX (KL)": getP('pertamax'),
-                    "Cancel/Deviasi PERTAMAX (KL)": getC('pertamax'),
-                    "Realisasi PERTAMAX (KL)": item.pertamax,
-                    "Plan DEXLITE (KL)": getP('dexlite'),
-                    "Cancel/Deviasi DEXLITE (KL)": getC('dexlite'),
-                    "Realisasi DEXLITE (KL)": item.dexlite,
-                    "Plan PERTADEX (KL)": getP('pertadex'),
-                    "Cancel/Deviasi PERTADEX (KL)": getC('pertadex'),
-                    "Realisasi PERTADEX (KL)": item.pertadex,
-                    "TOTAL PLAN (KL)": totalPlan,
-                    "TOTAL CANCEL/DEVIASI (KL)": totalCancel,
-                    "TOTAL REALISASI (KL)": totalReal
+                    "Plan BIOSOLAR (KL)": Math.round(getP('biosolar')),
+                    "Cancel/Deviasi BIOSOLAR (KL)": Math.round(getC('biosolar')),
+                    "Realisasi BIOSOLAR (KL)": Math.round(item.biosolar),
+                    "Plan PERTALITE (KL)": Math.round(getP('pertalite')),
+                    "Cancel/Deviasi PERTALITE (KL)": Math.round(getC('pertalite')),
+                    "Realisasi PERTALITE (KL)": Math.round(item.pertalite),
+                    "Plan PERTAMAX (KL)": Math.round(getP('pertamax')),
+                    "Cancel/Deviasi PERTAMAX (KL)": Math.round(getC('pertamax')),
+                    "Realisasi PERTAMAX (KL)": Math.round(item.pertamax),
+                    "Plan DEXLITE (KL)": Math.round(getP('dexlite')),
+                    "Cancel/Deviasi DEXLITE (KL)": Math.round(getC('dexlite')),
+                    "Realisasi DEXLITE (KL)": Math.round(item.dexlite),
+                    "Plan PERTADEX (KL)": Math.round(getP('pertadex')),
+                    "Cancel/Deviasi PERTADEX (KL)": Math.round(getC('pertadex')),
+                    "Realisasi PERTADEX (KL)": Math.round(item.pertadex),
+                    "TOTAL PLAN (KL)": Math.round(totalPlan),
+                    "TOTAL CANCEL/DEVIASI (KL)": Math.round(totalCancel),
+                    "TOTAL REALISASI (KL)": Math.round(totalReal)
                 };
             });
 
@@ -2263,18 +2251,18 @@
 
                     listBulanan.push({
                         "Bulan": bName,
-                        "Plan BIOSOLAR (KL)": parseFloat(s.plan_biosolar.toFixed(2)),
-                        "Cancel BIOSOLAR (KL)": parseFloat(s.cancel_biosolar.toFixed(2)),
-                        "Realisasi BIOSOLAR (KL)": parseFloat(s.biosolar.toFixed(2)),
-                        "Plan PERTALITE (KL)": parseFloat(s.plan_pertalite.toFixed(2)),
-                        "Cancel PERTALITE (KL)": parseFloat(s.cancel_pertalite.toFixed(2)),
-                        "Realisasi PERTALITE (KL)": parseFloat(s.pertalite.toFixed(2)),
-                        "Plan PERTAMAX (KL)": parseFloat(s.plan_pertamax.toFixed(2)),
-                        "Cancel PERTAMAX (KL)": parseFloat(s.cancel_pertamax.toFixed(2)),
-                        "Realisasi PERTAMAX (KL)": parseFloat(s.pertamax.toFixed(2)),
-                        "TOTAL PLAN (KL)": parseFloat(tPlan.toFixed(2)),
-                        "TOTAL CANCEL (KL)": parseFloat(tCancel.toFixed(2)),
-                        "TOTAL REALISASI (KL)": parseFloat(tReal.toFixed(2)),
+                        "Plan BIOSOLAR (KL)": Math.round(s.plan_biosolar),
+                        "Cancel BIOSOLAR (KL)": Math.round(s.cancel_biosolar),
+                        "Realisasi BIOSOLAR (KL)": Math.round(s.biosolar),
+                        "Plan PERTALITE (KL)": Math.round(s.plan_pertalite),
+                        "Cancel PERTALITE (KL)": Math.round(s.cancel_pertalite),
+                        "Realisasi PERTALITE (KL)": Math.round(s.pertalite),
+                        "Plan PERTAMAX (KL)": Math.round(s.plan_pertamax),
+                        "Cancel PERTAMAX (KL)": Math.round(s.cancel_pertamax),
+                        "Realisasi PERTAMAX (KL)": Math.round(s.pertamax),
+                        "TOTAL PLAN (KL)": Math.round(tPlan),
+                        "TOTAL CANCEL (KL)": Math.round(tCancel),
+                        "TOTAL REALISASI (KL)": Math.round(tReal),
                         "CANCEL RATE (%)": tPlan > 0 ? parseFloat((tCancel / tPlan * 100).toFixed(2)) : 0
                     });
                 }

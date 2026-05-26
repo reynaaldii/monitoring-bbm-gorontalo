@@ -1136,6 +1136,12 @@
                 }
                 bbmData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
                 localStorage.setItem('it_gorontalo_bbm_data', JSON.stringify(bbmData));
+                
+                // MENGUBAH TANGGAL FILTER PADA KARTU ANALISIS DAN MENGKOSONGKAN PENCARIAN 
+                // UNTUK MEMBERIKAN FEEDBACK INTEGRASI REAL-TIME YANG MAKSIMAL
+                document.getElementById('target-plan-date').value = tanggal;
+                document.getElementById('search-data').value = '';
+
                 renderDashboard();
                 showNotification(isEdit ? "Log penyaluran berhasil diubah!" : "Penyaluran Shift I & II berhasil ditambahkan.");
             }
@@ -1385,6 +1391,19 @@
                 }
             });
             lucide.createIcons();
+        }
+
+        function switchChartScope(scope) {
+            currentChartScope = scope;
+            ['daily', 'monthly', 'quarterly'].forEach(sc => {
+                const btn = document.getElementById(`btn-scope-${sc}`);
+                if (btn) {
+                    btn.className = (sc === scope)
+                        ? "px-3 py-1.5 rounded-md font-medium transition bg-blue-600 text-white"
+                        : "px-3 py-1.5 rounded-md font-medium transition text-brand-textSecondary hover:text-white";
+                }
+            });
+            renderMainDistributionChart();
         }
 
         function calculateKPIs() {

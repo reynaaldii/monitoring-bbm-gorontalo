@@ -6,8 +6,9 @@
     <title>BBM Real-Time Monitoring - IT Gorontalo</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
+    <!-- Chart.js & DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <!-- SheetJS (XLSX) untuk Ekspor Excel yang rapi -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Lucide Icons -->
@@ -761,6 +762,10 @@
         const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         window.onload = function () {
+            // Mendaftarkan Plugin DataLabels agar dapat digunakan per grafik
+            Chart.register(ChartDataLabels);
+            Chart.defaults.plugins.datalabels.display = false; // Disable global default
+
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today;
 
@@ -1082,7 +1087,7 @@
                 // Shift 1
                 const plan1 = getVal(`plan-${p}-1`);
                 const real1 = getVal(`real-${p}-1`);
-                const cancel1 = getVal(`cancel-${p}-1`); // Baca Langsung dari Input
+                const cancel1 = getVal(`cancel-${p}-1`); 
                 record1[`plan_${p}`] = plan1;
                 record1[p] = real1;
                 record1[`cancel_${p}`] = cancel1; 
@@ -1090,7 +1095,7 @@
                 // Shift 2
                 const plan2 = getVal(`plan-${p}-2`);
                 const real2 = getVal(`real-${p}-2`);
-                const cancel2 = getVal(`cancel-${p}-2`); // Baca Langsung dari Input
+                const cancel2 = getVal(`cancel-${p}-2`); 
                 record2[`plan_${p}`] = plan2;
                 record2[p] = real2;
                 record2[`cancel_${p}`] = cancel2;
@@ -1328,7 +1333,15 @@
                             backgroundColor: '#3b82f6aa', 
                             borderColor: '#3b82f6',
                             borderWidth: 1.5,
-                            borderRadius: 4
+                            borderRadius: 4,
+                            datalabels: {
+                                display: true,
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#f8fafc',
+                                font: { size: 9 },
+                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            }
                         },
                         {
                             label: 'Realisasi (Aktual Terkirim)',
@@ -1336,7 +1349,15 @@
                             backgroundColor: '#10b981aa', 
                             borderColor: '#10b981',
                             borderWidth: 1.5,
-                            borderRadius: 4
+                            borderRadius: 4,
+                            datalabels: {
+                                display: true,
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#f8fafc',
+                                font: { size: 9 },
+                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            }
                         }
                     ]
                 },
@@ -1350,8 +1371,15 @@
                         }
                     },
                     scales: {
-                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-                        y: { grid: { display: false }, ticks: { color: '#f8fafc', font: { size: 10, weight: 'bold' } } }
+                        x: { 
+                            grid: { color: '#1e293b' }, 
+                            ticks: { color: '#94a3b8', font: { size: 9 } },
+                            grace: '15%' // Ruang ekstra agar label tidak terpotong
+                        },
+                        y: { 
+                            grid: { display: false }, 
+                            ticks: { color: '#f8fafc', font: { size: 10, weight: 'bold' } } 
+                        }
                     }
                 }
             });
@@ -1408,7 +1436,7 @@
             setText('stat-total-ytd', totalRealisasi.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
             setText('stat-total-plan', totalPlan.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
             setText('stat-total-cancel', totalCancel.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KL");
-            setText('stat-cancel-ratio', `Deviasi Selisih: ${ratioCancel.toFixed(2)}% dari rencana`);
+            setText('stat-cancel-ratio', `Total Batal/Deviasi: ${ratioCancel.toFixed(2)}% dari rencana`);
 
             let daysSum = Array(7).fill(0);
             let daysCount = Array(7).fill(0);
@@ -1525,7 +1553,14 @@
                         backgroundColor: conf.color + '05',
                         fill: true,
                         tension: 0.3,
-                        borderWidth: 2
+                        borderWidth: 2,
+                        datalabels: {
+                            display: true,
+                            align: 'top',
+                            color: conf.color, // Mengikuti warna produk
+                            font: { size: 9, weight: 'bold' },
+                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                        }
                     });
                 });
 
@@ -1613,7 +1648,14 @@
                         borderColor: '#3b82f6', 
                         backgroundColor: '#3b82f605',
                         borderWidth: 2,
-                        tension: 0.3
+                        tension: 0.3,
+                        datalabels: {
+                            display: true,
+                            align: 'top',
+                            color: '#93c5fd', // blue-300
+                            font: { size: 9, weight: 'bold' },
+                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                        }
                     },
                     {
                         label: `Realisasi (Aktual) ${currentProductLabel}`,
@@ -1622,7 +1664,14 @@
                         backgroundColor: productsConfig[productFilter].color + '15',
                         fill: true,
                         borderWidth: 3,
-                        tension: 0.3
+                        tension: 0.3,
+                        datalabels: {
+                            display: true,
+                            align: 'top',
+                            color: productsConfig[productFilter].color,
+                            font: { size: 9, weight: 'bold' },
+                            formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                        }
                     }
                 ];
             }
@@ -1638,7 +1687,11 @@
                     },
                     scales: {
                         x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                        y: { 
+                            grid: { color: '#1e293b' }, 
+                            ticks: { color: '#94a3b8' },
+                            grace: '10%' // Ruang ekstra agar label tidak terpotong di atas
+                        }
                     }
                 }
             });
@@ -1910,7 +1963,15 @@
                             borderColor: '#3b82f6',
                             borderWidth: 1,
                             borderRadius: 4,
-                            maxBarThickness: 15
+                            maxBarThickness: 15,
+                            datalabels: {
+                                display: true,
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#93c5fd', // blue-300
+                                font: { size: 9, weight: 'bold' },
+                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            }
                         },
                         {
                             label: 'Rerata Realisasi (Aktual)',
@@ -1919,7 +1980,15 @@
                             borderColor: '#10b981',
                             borderWidth: 1,
                             borderRadius: 4,
-                            maxBarThickness: 15
+                            maxBarThickness: 15,
+                            datalabels: {
+                                display: true,
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#6ee7b7', // emerald-300
+                                font: { size: 9, weight: 'bold' },
+                                formatter: (val) => val > 0 ? val.toFixed(1) : ''
+                            }
                         }
                     ]
                 },
@@ -1934,7 +2003,11 @@
                     },
                     scales: {
                         x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } }
+                        y: { 
+                            grid: { color: '#1e293b' }, 
+                            ticks: { color: '#94a3b8', font: { size: 9 } },
+                            grace: '15%' // Ruang ekstra di puncak grafik agar angka label tidak terpotong
+                        }
                     }
                 }
             });
@@ -1965,6 +2038,13 @@
                 const totalRealisasi = item.biosolar + item.pertalite + item.pertamax + item.dexlite + item.pertadex;
                 const segClass = segmenColors[item.segmen] || segmenColors.RETAIL;
                 
+                // Menyiapkan teks hover/tooltip untuk Tabel Transaksi Log secara akurat
+                const ttBio = `Plan: ${item.plan_biosolar !== undefined ? item.plan_biosolar : item.biosolar} KL | Cancel: ${item.cancel_biosolar || 0} KL`;
+                const ttPrt = `Plan: ${item.plan_pertalite !== undefined ? item.plan_pertalite : item.pertalite} KL | Cancel: ${item.cancel_pertalite || 0} KL`;
+                const ttPmx = `Plan: ${item.plan_pertamax !== undefined ? item.plan_pertamax : item.pertamax} KL | Cancel: ${item.cancel_pertamax || 0} KL`;
+                const ttDex = `Plan: ${item.plan_dexlite !== undefined ? item.plan_dexlite : item.dexlite} KL | Cancel: ${item.cancel_dexlite || 0} KL`;
+                const ttPdx = `Plan: ${item.plan_pertadex !== undefined ? item.plan_pertadex : item.pertadex} KL | Cancel: ${item.cancel_pertadex || 0} KL`;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/40 transition">
                         <td class="py-3.5 px-3 font-medium text-white">
@@ -1981,11 +2061,11 @@
                                 ${item.segmen || 'RETAIL'}
                             </span>
                         </td>
-                        <td class="py-3.5 px-3 text-right font-mono text-emerald-400 font-semibold" title="Plan: ${item.plan_biosolar || item.biosolar} KL | Cancel: ${item.cancel_biosolar || 0} KL">${item.biosolar.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-lime-400 font-semibold" title="Plan: ${item.plan_pertalite || item.pertalite} KL | Cancel: ${item.cancel_pertalite || 0} KL">${item.pertalite.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-blue-400 font-semibold" title="Plan: ${item.plan_pertamax || item.pertamax} KL | Cancel: ${item.cancel_pertamax || 0} KL">${item.pertamax.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-orange-400 font-semibold" title="Plan: ${item.plan_dexlite || item.dexlite} KL | Cancel: ${item.cancel_dexlite || 0} KL">${item.dexlite.toFixed(2)}</td>
-                        <td class="py-3.5 px-3 text-right font-mono text-red-400 font-semibold" title="Plan: ${item.plan_pertadex || item.pertadex} KL | Cancel: ${item.cancel_pertadex || 0} KL">${item.pertadex.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-emerald-400 font-semibold cursor-help" title="${ttBio}">${item.biosolar.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-lime-400 font-semibold cursor-help" title="${ttPrt}">${item.pertalite.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-blue-400 font-semibold cursor-help" title="${ttPmx}">${item.pertamax.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-orange-400 font-semibold cursor-help" title="${ttDex}">${item.dexlite.toFixed(2)}</td>
+                        <td class="py-3.5 px-3 text-right font-mono text-red-400 font-semibold cursor-help" title="${ttPdx}">${item.pertadex.toFixed(2)}</td>
                         <td class="py-3.5 px-3 text-right font-mono font-bold text-white bg-slate-800/15">${totalRealisasi.toFixed(2)}</td>
                         <td class="py-3.5 px-3 text-center">
                             <div class="flex items-center justify-center gap-1.5">
@@ -2018,13 +2098,17 @@
 
             let totals = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
             let planTotals = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
+            let cancelTotals = { biosolar: 0, pertalite: 0, pertamax: 0, dexlite: 0, pertadex: 0 };
 
             filteredData.forEach(item => {
                 Object.keys(totals).forEach(k => {
-                    const planVal = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : (item[k] || 0);
                     const realVal = item[k] || 0;
+                    const planVal = item[`plan_${k}`] !== undefined ? item[`plan_${k}`] : realVal;
+                    const cancelVal = item[`cancel_${k}`] !== undefined ? item[`cancel_${k}`] : 0;
+                    
                     totals[k] += realVal;
                     planTotals[k] += planVal;
+                    cancelTotals[k] += cancelVal; // Membaca Cancel Langsung dari Input Database
                 });
             });
 
@@ -2056,8 +2140,8 @@
                     const conf = productsConfig[pKey];
                     const avgReal = averages[pKey] || 0;
                     const pTotal = planTotals[pKey] || 0;
-                    const rTotal = totals[pKey] || 0;
-                    const cancelRate = pTotal > 0 ? (Math.max(0, pTotal - rTotal) / pTotal * 100) : 0;
+                    const cTotal = cancelTotals[pKey] || 0;
+                    const cancelRate = pTotal > 0 ? (cTotal / pTotal * 100) : 0; // Analisis 100% menggunakan Input Cancel 
                     
                     let safetyStockPct = 10;
                     let status = "NORMAL Demand";
